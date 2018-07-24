@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>在kunerentes使用高可用mysql-galera集群</title>
+  <meta property="og:title" content="在kunerentes使用高可用mysql-galera集群" />
+  <meta name="twitter:title" content="在kunerentes使用高可用mysql-galera集群" />
+  <meta name="description" content="什么是Galera Cluster集群 &nbsp;&nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前G">
+  <meta property="og:description" content="什么是Galera Cluster集群 &nbsp;&nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前G">
+  <meta name="twitter:description" content="什么是Galera Cluster集群 &nbsp;&nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前G">
+  <meta name="author" content=""/>
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://l453595892.github.io/post/mysql-galera/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CraftLi的博客" />
+
+  <meta name="generator" content="Hugo 0.45-DEV" />
+  <link rel="canonical" href="https://l453595892.github.io/post/mysql-galera/" />
+  <link rel="alternate" href="https://l453595892.github.io/index.xml" type="application/rss+xml" title="CraftLi的博客">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://l453595892.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://l453595892.github.io/css/syntax.css" /><link rel="stylesheet" href="https://l453595892.github.io/css/codeblock.css" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://l453595892.github.io">CraftLi的博客</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>在kunerentes使用高可用mysql-galera集群</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 24, 2018
+  
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h4 id="什么是galera-cluster集群">什么是Galera Cluster集群</h4>
+
+<p>&nbsp;&nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前Galera Cluster有两个版本，分别是Percona Xtradb Cluster及MariaDB Cluster，都是基于Galera的，所以这里都统称为Galera Cluster了，因为Galera本身是具有多主特性的，所以Galera Cluster也就是multi-master的集群架构。如图:</p>
+
+<p><img src="/img/galera.jpg" alt="123123" /></p>
+
+<p>&nbsp;&nbsp;图中有三个实例，组成了一个集群，而这三个节点与普通的主从架构不同，它
+们都可以作为主节点，三个节点是对等的，这种一般称为multi-master架构，当有客户端要
+写入或者读取数据时，随便连接哪个实例都是一样的，读到的数据是相同的，写入某一个节
+点之后，集群自己会将新数据同步到其它节点上面，这种架构不共享任何数据。</p>
+
+<p>&nbsp;&nbsp;一般的使用方法是，在这个集群上面，再搭建一个中间层，这个中间层的功能
+包括建立连接、管理连接池，负责使三个实例的负载基本平衡，负责在客户端与实例的连接
+断开之后重连，也可以负责读写分离（在机器性能不同的情况下可以做这样的优化）等等，
+使用这个中间层之后，由于这三个实例的架构在客户端方面是透明的，客户端只需要指定这
+个集群的数据源地址，连接到中间层即可，中间层会负责客户端与服务器实例连接的传递工
+作，由于这个架构支持多点写入，所以完全避免了主从复制经常出现的数据不一致的问题，
+从而可以做到主从读写切换的高度优雅，在不影响用户的情况下，离线维护等工作，MySQL&gt;的高可用，从此开始，非常完美。</p>
+
+<h2 id="mysql-galera使用-测试说明">mysql-galera使用、测试说明</h2>
+
+<h4 id="源镜像">源镜像</h4>
+
+<p>使用的是hauptmedia/mariadb:10.1　删除entrypoint.sh中的<code>DELETE FROM mysql.user</code>，否则密码不会同步，导致failover后无法连接。</p>
+
+<h4 id="下载mysql镜像">下载mysql镜像</h4>
+
+<pre><code class="language-docker">docker pull l453595892/mysql-galera
+</code></pre>
+
+<h4 id="测试步骤">测试步骤</h4>
+
+<p>使用两台机器，分别启动mysql node1(192.168.30.104),node2(192.168.30.102) 测试数据同步和failover，设node1为启动初始化节点，node2为后加入节点。</p>
+
+<p>1.启动node1,node2
+node1</p>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 --wsrep-new-cluster
+</code></pre>
+
+<p>node2</p>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>在node1,node2上分别建立数据库、表并插入数据。在node1,node2上面都能查询到插入的数据。</p>
+
+<ul>
+<li>查看node1,node2上的wsrep_local_state_comment值</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>node1,node2的值都应该是&rdquo;Synced&rdquo;。</p>
+
+<p>2.node2不正常的断开
+可能因为网络或程序coredump导致node1没有收到node2的正常退出消息和心跳,使用docker pause模拟</p>
+
+<pre><code class="language-docker">docker pause node2
+docker stop node2
+</code></pre>
+
+<ul>
+<li>在node1上面查看wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值已经变为&rdquo;Initialized&rdquo;,表示不在进行服务，此时读写都将超时。</p>
+
+<ul>
+<li>设置node1提供服务，表示其具有较多数据</li>
+</ul>
+
+<pre><code class="language-mysql">SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'
+</code></pre>
+
+<ul>
+<li>在node1上面查看wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值已经是&rdquo;Synced&rdquo;，表示正常提供服务，可读写。</p>
+
+<ul>
+<li><p>在node1上面写入数据，数据可以正常写入并查询。</p></li>
+
+<li><p>将node2启动</p></li>
+</ul>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
+
+<p>3.node2正常断开</p>
+
+<ul>
+<li>node1收到了node2正常退出消息，查看node1的wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值为&rdquo;Synced&rdquo;,表示正常提供服务，可读写。</p>
+
+<ul>
+<li><p>在node1上面写入数据，数据可以正常写入并查询。</p></li>
+
+<li><p>将node2启动</p></li>
+</ul>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
+
+<p>4.node1不正常断开</p>
+
+<pre><code class="language-docker">docker pause node1
+docker stop node1
+</code></pre>
+
+<ul>
+<li>在node2上面查看wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值已经变为&rdquo;Initialized&rdquo;,表示不在进行服务，此时读写都将超时。</p>
+
+<ul>
+<li>设置node2提供服务，表示其具有较多数据</li>
+</ul>
+
+<pre><code class="language-mysql">SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'
+</code></pre>
+
+<ul>
+<li>在node2上面查看wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值已经是&rdquo;Synced&rdquo;，表示正常提供服务，可读写。</p>
+
+<ul>
+<li><p>在node2上面写入数据，数据可以正常写入并查询。</p></li>
+
+<li><p>将node1启动，此时node1不在作为启动节点启动，而是加入到node2中</p></li>
+</ul>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>在node1上面查看，可以读取到刚才在node2上面插入的数据说明数据同步了。在node1上再插入数据，node1,node2上面都能查看。</p>
+
+<p>5.node1正常断开</p>
+
+<ul>
+<li>node2收到了node1正常退出消息，查看node2的wsrep_local_state_comment</li>
+</ul>
+
+<pre><code class="language-mysql">show status like &quot;wsrep_local_state_comment&quot;
+</code></pre>
+
+<p>其值为&rdquo;Synced&rdquo;,表示正常提供服务，可读写。</p>
+
+<ul>
+<li><p>在node2上面写入数据，数据可以正常写入并查询。</p></li>
+
+<li><p>将node1启动，此时node1不在作为启动节点启动，而是加入到node2中</p></li>
+</ul>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
+
+<p>6.node1,node2都正常断开</p>
+
+<ul>
+<li>分别查看node1、node2的mysql/grastate.dat文件，找到其中safe_to_bootstrap=1的节点作为启动节点，另外一个加入它。
+比如node2的grastate.dat中safe_to_bootstrap=1</li>
+</ul>
+
+<p>启动node2</p>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 --wsrep-new-cluster
+</code></pre>
+
+<p>启动node1</p>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+</code></pre>
+
+<p>正常启动后，在node1,node2上都能查看down掉之前的数据，并能在node1,node2上插入新数据并同步。</p>
+
+<p>7.node1,node2都不正常断开</p>
+
+<ul>
+<li>分别查看node1、node2的mysql/grastate.dat文件，safe_to_bootstrap的值都为0，找到seq最大的一个为启动节点，并设置safe_to_bootstrap的值为1后启动。</li>
+</ul>
+
+<p><code>注意：强行用seq小的node启动。会报错如下：Reversing history: 4 -&gt; 3, this member has applied 1 more events than the primary component.Data loss is possible. Aborting.</code></p>
+
+<h4 id="自动set-global-wsrep-provider-options-pc-bootstrap-yes">自动SET GLOBAL wsrep_provider_options=&lsquo;pc.bootstrap=YES&rsquo;</h4>
+
+<p>如上所述，两个节点中有一个节点不正常断开后另外一个会变成不可服务状态，此时需要仲裁者将其设置为可服务状态。</p>
+
+<ul>
+<li>在另外一台主机上启动仲裁者</li>
+</ul>
+
+<pre><code class="language-docker">docker pull mirror.ghostcloud.cn/paas/mysql-arbitrator:10.1
+docker run -it --net=host --rm --name=&quot;arbitrator&quot; -h &quot;arbitrator&quot; -e ROOT_PASSWORD=&quot;test&quot; -e GCOMM=&quot;192.168.30.104:3306,192.168.30.102:3306&quot; -e TIMEOUT=&quot;3s&quot; -e READ_TIMEOUT=&quot;3s&quot; mirror.ghostcloud.cn/paas/mysql-arbitrator:10.1
+</code></pre>
+
+<ul>
+<li>不正常断开node1,查看node2的wsrep_local_state_comment值自动从&rdquo;Initialized&rdquo;变成&rdquo;Synced&rdquo;，并能正常读写。</li>
+<li>进行其他failover测试。</li>
+</ul>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
+            
+              <a href="https://l453595892.github.io/tags/mysql/">mysql</a>&nbsp;
+            
+          </div>
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://l453595892.github.io">CraftLi的博客</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.45-DEV</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

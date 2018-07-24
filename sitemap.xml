@@ -3,13 +3,8 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://l453595892.github.io/post/second/</loc>
-    <lastmod>2018-07-23T09:14:14+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://l453595892.github.io/post/first/</loc>
-    <lastmod>2018-07-21T09:01:58+08:00</lastmod>
+    <loc>https://l453595892.github.io/post/mysql-galera/</loc>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
   </url>
   
   <url>
@@ -19,18 +14,31 @@
   
   <url>
     <loc>https://l453595892.github.io/</loc>
-    <lastmod>2018-07-23T09:14:14+08:00</lastmod>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://l453595892.github.io/tags/kubernetes/</loc>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://l453595892.github.io/tags/mysql/</loc>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://l453595892.github.io/post/</loc>
-    <lastmod>2018-07-23T09:14:14+08:00</lastmod>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://l453595892.github.io/tags/</loc>
+    <lastmod>2018-07-24T10:57:47+08:00</lastmod>
     <priority>0</priority>
   </url>
   

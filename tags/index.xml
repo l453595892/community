@@ -5,10 +5,29 @@
     <link>https://l453595892.github.io/tags/</link>
     <description>Recent content in Tags on CraftLi的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>UTF-8</language>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 24 Jul 2018 10:57:47 +0800</lastBuildDate>
     
 	<atom:link href="https://l453595892.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://l453595892.github.io/tags/kubernetes/</link>
+      <pubDate>Tue, 24 Jul 2018 10:57:47 +0800</pubDate>
+      
+      <guid>https://l453595892.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mysql</title>
+      <link>https://l453595892.github.io/tags/mysql/</link>
+      <pubDate>Tue, 24 Jul 2018 10:57:47 +0800</pubDate>
+      
+      <guid>https://l453595892.github.io/tags/mysql/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>
