@@ -219,22 +219,23 @@
 
 <h4 id="下载mysql镜像">下载mysql镜像</h4>
 
-<pre><code class="language-docker">docker pull l453595892/mysql-galera
+<pre><code class="language-docker">docker pull l453595892/mysql-galera:10.1
 </code></pre>
 
 <h4 id="测试步骤">测试步骤</h4>
 
 <p>使用两台机器，分别启动mysql node1(192.168.30.104),node2(192.168.30.102) 测试数据同步和failover，设node1为启动初始化节点，node2为后加入节点。</p>
 
-<p>1.启动node1,node2
-node1</p>
+<p>1.启动node1,node2</p>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 --wsrep-new-cluster
+<p>node1</p>
+
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql l453595892/mysql-galera:10.1 --wsrep-new-cluster
 </code></pre>
 
 <p>node2</p>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql l453595892/mysql-galera:10.1 ./entrypoint.sh mysqld
 </code></pre>
 
 <p>在node1,node2上分别建立数据库、表并插入数据。在node1,node2上面都能查询到插入的数据。</p>
@@ -286,7 +287,7 @@ docker stop node2
 <li><p>将node2启动</p></li>
 </ul>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql. l453595892/mysql-galera:10.1 /entrypoint.sh mysqld
 </code></pre>
 
 <p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
@@ -308,7 +309,7 @@ docker stop node2
 <li><p>将node2启动</p></li>
 </ul>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.104&quot; -v /data/mysql:/var/lib/mysql. l453595892/mysql-galera:10.1 /entrypoint.sh mysqld
 </code></pre>
 
 <p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
@@ -350,7 +351,7 @@ docker stop node1
 <li><p>将node1启动，此时node1不在作为启动节点启动，而是加入到node2中</p></li>
 </ul>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql. l453595892/mysql-galera:10.1 /entrypoint.sh mysqld
 </code></pre>
 
 <p>在node1上面查看，可以读取到刚才在node2上面插入的数据说明数据同步了。在node1上再插入数据，node1,node2上面都能查看。</p>
@@ -372,7 +373,7 @@ docker stop node1
 <li><p>将node1启动，此时node1不在作为启动节点启动，而是加入到node2中</p></li>
 </ul>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql. l453595892/mysql-galera:10.1 /entrypoint.sh mysqld
 </code></pre>
 
 <p>在node2上面查看，可以读取到刚才在node1上面插入的数据说明数据同步了。在node2上再插入数据，node1,node2上面都能查看。</p>
@@ -386,12 +387,12 @@ docker stop node1
 
 <p>启动node2</p>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 --wsrep-new-cluster
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node2&quot; -h &quot;node2&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node2&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://&quot; -v /data/mysql:/var/lib/mysql- l453595892/mysql-galera:10.1 -wsrep-new-cluster
 </code></pre>
 
 <p>启动node1</p>
 
-<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql mirror.ghostcloud.cn/paas/mysql-galera:10.1 ./entrypoint.sh mysqld
+<pre><code class="language-docker">docker run -it --net=host --rm --name=&quot;node1&quot; -h &quot;node1&quot; -e MYSQL_ROOT_PASSWORD=&quot;test&quot; -e REPLICATION_PASSWORD=&quot;test&quot; -e MYSQL_DATABASE=&quot;maria&quot; -e MYSQL_PASSWORD=&quot;test&quot; -e GALERA=&quot;On&quot; -e NODE_NAME=&quot;node1&quot; -e CLUSTER_NAME=&quot;maria_cluster&quot; -e CLUSTER_ADDRESS=&quot;gcomm://192.168.30.102&quot; -v /data/mysql:/var/lib/mysql l453595892/mysql-galera:10.1 ./entrypoint.sh mysqld
 </code></pre>
 
 <p>正常启动后，在node1,node2上都能查看down掉之前的数据，并能在node1,node2上插入新数据并同步。</p>
