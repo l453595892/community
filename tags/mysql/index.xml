@@ -17,7 +17,7 @@
       <pubDate>Tue, 24 Jul 2018 10:57:47 +0800</pubDate>
       
       <guid>https://l453595892.github.io/post/mysql-galera/</guid>
-      <description>什么是Galera Cluster集群 &amp;nbsp;&amp;nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前G</description>
+      <description>本节的目的意在通过docker创建并测试mysql-galera集群并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务。</description>
     </item>
     
   </channel>
