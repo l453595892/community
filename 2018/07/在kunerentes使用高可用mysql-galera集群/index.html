@@ -198,7 +198,7 @@
 
 <p>本节的目的意在通过docker创建并测试mysql-galera集群并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务。</p>
 
-<h4 id="什么是galeracluster集群">什么是GaleraCluster集群</h4>
+<h4 id="什么是galera-cluster集群">什么是Galera Cluster集群</h4>
 
 <p>&nbsp;&nbsp;Galera Cluster就是集成了Galera插件的MySQL集群，是一种新型的，数据不共享的高可用方案，目前Galera Cluster有两个版本，分别是Percona Xtradb Cluster及MariaDB Cluster，都是基于Galera的，所以这里都统称为Galera Cluster了，因为Galera本身是具有多主特性的，所以Galera Cluster也就是multi-master的集群架构。如图:</p>
 
@@ -419,8 +419,8 @@ docker stop node1
 <li>在另外一台主机上启动仲裁者</li>
 </ul>
 
-<pre><code class="language-docker">docker pull mirror.ghostcloud.cn/paas/mysql-arbitrator:10.1
-docker run -it --net=host --rm --name=&quot;arbitrator&quot; -h &quot;arbitrator&quot; -e ROOT_PASSWORD=&quot;test&quot; -e GCOMM=&quot;192.168.30.104:3306,192.168.30.102:3306&quot; -e TIMEOUT=&quot;3s&quot; -e READ_TIMEOUT=&quot;3s&quot; mirror.ghostcloud.cn/paas/mysql-arbitrator:10.1
+<pre><code class="language-docker">docker pull l453595892/mysql-arbitrator:10.1
+docker run -it --net=host --rm --name=&quot;arbitrator&quot; -h &quot;arbitrator&quot; -e ROOT_PASSWORD=&quot;test&quot; -e GCOMM=&quot;192.168.30.104:3306,192.168.30.102:3306&quot; -e TIMEOUT=&quot;3s&quot; -e READ_TIMEOUT=&quot;3s&quot; l453595892/mysql-arbitrator:10.1
 </code></pre>
 
 <ul>
