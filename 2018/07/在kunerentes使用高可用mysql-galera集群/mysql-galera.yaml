@@ -1,0 +1,99 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: mysql-galera
+  labels:
+    app: mysql-galera
+    cluster: mysql-galera
+    dns: mysql-galera-dns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql-galera
+      cluster: mysql-galera
+      dns: mysql-galera-dns
+  serviceName: mysql-galera-dns
+  template:
+    metadata:
+      labels:
+        app: mysql-galera
+        cluster: mysql-galera
+        dns: mysql-galera-dns
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "test"
+        - name: REPLICATION_PASSWORD
+          value: "test"
+        - name: MYSQL_DATABASE
+          value: "maria"
+        - name: MYSQL_PASSWORD
+          value: "test"
+        - name: GALERA
+          value: "On"
+        - name: CLUSTER_NAME
+          value: "maria_cluster"
+        - name: MYSQL_DNS
+          value: "mysql-galera-0.mysql-galera-dns"
+        image: l453595892/mysql-galera:10.1.1
+        name: mysql-galera
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2000M
+          limits:
+            cpu: 2000m
+            memory: 2000M          
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/default/mysql-galera
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: cluster
+                operator: In
+                values:
+                - mysql-galera
+            topologyKey: "kubernetes.io/hostname"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-galera-dns
+  labels:
+    dns: mysql-galera-dns
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+  clusterIP: None
+  type: ClusterIP
+  selector:
+    dns: mysql-galera-dns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-galera
+  labels:
+    app: mysql-galera
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: mysql-galera
