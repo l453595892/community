@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kuberentes Network解析</title>
+  <meta property="og:title" content="Kuberentes Network解析" />
+  <meta name="twitter:title" content="Kuberentes Network解析" />
+  <meta name="description" content="本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中">
+  <meta property="og:description" content="本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中">
+  <meta name="twitter:description" content="本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中">
+  <meta name="author" content=""/>
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CraftLi的博客" />
+
+  <meta name="generator" content="Hugo 0.45-DEV" />
+  <link rel="canonical" href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/" />
+  <link rel="alternate" href="https://l453595892.github.io/index.xml" type="application/rss+xml" title="CraftLi的博客">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://l453595892.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://l453595892.github.io/css/syntax.css" /><link rel="stylesheet" href="https://l453595892.github.io/css/codeblock.css" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://l453595892.github.io">CraftLi的博客</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="The git page" href="https://github.com/l453595892">The git page</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/kubernetes-network-bk.jpg" data-img-desc-1="TaiWan village"></div>
+  
+
+  <header class="header-section has-img">
+    
+      <div class="intro-header big-img">
+        
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+              <div class="post-heading">
+                <h1>Kuberentes Network解析</h1>
+                  
+                  
+                    <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 30, 2018
+  
+  
+  
+</span>
+
+
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="img-desc" style="display: inline;"></span>
+      </div>
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Kuberentes Network解析</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 30, 2018
+  
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p>本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中的网络原理（kube-proxy使用iptables、ipvs时实现方式的不同）</p>
+
+<h2 id="docker容器网络原理">docker容器网络原理</h2>
+
+<h3 id="libnetwork和docker网络">libnetwork和Docker网络</h3>
+
+<p>libnetwork项目从lincontainer和Docker代码的分离早在Docker 1.7版本就已经完成了（从Docker 1.6版本的网络代码中抽离）。在此之后，容器的网络接口就成为了一个个可替换的插件模块。在这个网络模型中定义了三个的术语：Sandbox、Endpoint和Network。</p>
+
+<p><img src="/img/libnetwork.jpg" alt="" /></p>
+
+<p>如上图所示，它们分别是容器通信中『容器网络环境』、『容器虚拟网卡』和『主机虚拟网卡/网桥』的抽象。</p>
+
+<ul>
+<li>Sandbox：对应一个容器中的网络环境，包括相应的网卡配置、路由表、DNS配置等。CNM很形象的将它表示为网络的『沙盒』，因为这样的网络环境是随着容器的创建而创建，又随着容器销毁而不复存在的；</li>
+<li>Endpoint：实际上就是一个容器中的虚拟网卡，在容器中会显示为eth0、eth1依次类推；</li>
+<li>Network：指的是一个能够相互通信的容器网络，加入了同一个网络的容器直接可以直接通过对方的名字相互连接。它的实体本质上是主机上的虚拟网卡或网桥。</li>
+</ul>
+
+<h3 id="none网络">none网络</h3>
+
+<p>none网络意味着没有网络，所创建的容器只有lo，没有其他的网卡。容器创建时可以使用<code>--network=none</code>指定使用none网络。none网络没有办法联网，封闭的网络能很好的保证容器的安全性，为用户提供了最大的灵活性容器。</p>
+
+<h3 id="host网络">host网络</h3>
+
+<p>由于容器和宿主机共享同一个网络命名空间，换言之，容器的IP地址即为宿主机的IP地址。使用<code>--network=host</code>指定使用host网络。所以容器可以和宿主机一样，使用宿主机的任意网卡，实现和外界的通信。采用host模式的容器，可以直接使用宿主机的IP地址与外界进行通信，若宿主机具有公有IP，那么容器也拥有这个公有IP。同时容器内服务的端口也可以使用宿主机的端口，无需额外进行NAT转换，而且由于容器通信时，不再需要通过linuxbridge等方式转发或者数据包的拆封，性能上有很大优势。当然，这种模式有优势，也就有劣势，主要包括以下几个方面：</p>
+
+<ul>
+<li>最明显的就是容器不再拥有隔离、独立的网络栈。容器会与宿主机竞争网络栈的使用，并且容器的崩溃就可能导致宿主机崩溃，在生产环境中，这种问题可能是不被允许的。</li>
+<li>容器内部将不再拥有所有的端口资源，因为一些端口已经被宿主机服务、bridge模式的容器端口绑定等其他服务占用掉了。</li>
+</ul>
+
+<h3 id="bridge网络">bridge网络</h3>
+
+<p>bridge模式是docker默认的，也是开发者最常使用的网络模式。在这种模式下，docker为容器创建独立的网络栈，保证容器内的进程使用独立的网络环境，实现容器之间、容器与宿主机之间的网络栈隔离。同时，通过宿主机上的docker0网桥，容器可以与宿主机乃至外界进行网络通信。其网络模型如下图：</p>
+
+<p><img src="/img/bridge-0.jpg" alt="" /></p>
+
+<p>其实现原理为：</p>
+
+<ul>
+<li>Docker安装时会创建一个名为docker0的Linux bridge，如果不指定<code>--network</code>，那么创建的容器网络默认会挂载到docker0上：</li>
+</ul>
+
+<p><img src="/img/bridge-1.jpg" alt="" /></p>
+
+<ul>
+<li>使用<code>docker run httpd</code>之后再查看：</li>
+</ul>
+
+<p><img src="/img/bridge-2.jpg" alt="" /></p>
+
+<ul>
+<li>一个新的网络接口veth0c204f8被挂到了docker0上，veth0c204f8就是创建的新容器的虚拟网卡</li>
+</ul>
+
+<p><img src="/img/bridge-3.jpg" alt="" /></p>
+
+<ul>
+<li>进入容器看容器的网络配置可以看到网卡eth0@if7，eth0@if7和veth0c204f8是一对veth pair虚拟网卡。其中网卡一头（eth0if7）挂在docker容器中，另一头（veth0c204f8）挂在了docker0网桥上。</li>
+</ul>
+
+<p>从该网络模型可以看出，容器从原理上是可以与宿主机乃至外界的其他机器通信的。同一宿主机上，容器之间都是连接到docker0这个网桥上的，它可以作为虚拟交换机使容器可以相互通信。然而，由于宿主机的IP地址与容器veth pair的 IP地址均不在同一个网段，故仅仅依靠veth pair和namespace的技术，还不足以使宿主机以外的网络主动发现容器的存在。为了使外界可以方位容器中的进程，docker采用了端口绑定的方式，也就是通过iptables的NAT，将宿主机上的端口端口流量转发到容器内的端口上。</p>
+
+<p>使用下面的命令创建容器，并将宿主机的3306端口绑定到容器的3306端口：</p>
+
+<pre><code>docker run -tid –name db -p 3306:3306 mysql
+</code></pre>
+
+<p>在宿主机上，可以通过<code>iptables -t nat -L -n</code>，查到一条DNAT规则：</p>
+
+<pre><code>DNAT tcp — 0.0.0.0/0 0.0.0.0/0 tcp dpt:3306 to:172.17.0.5:3306
+</code></pre>
+
+<p>很明显，bridge模式的容器与外界通信时，必定会占用宿主机上的端口，从而与宿主机竞争端口资源，对宿主机端口的管理会是一个比较大的问题。同时，由于容器与外界通信是基于三层上iptables NAT，性能和效率上的损耗是可以预见的。</p>
+
+<h3 id="overlay-网络通信模型">Overlay 网络通信模型</h3>
+
+<h2 id="kubernetes网络原理">kubernetes网络原理</h2>
+
+<h3 id="容器间通信">容器间通信</h3>
+
+<p>同一个Pod的容器共享同一个网络命名空间，它们之间的访问可以用localhost地址 + 容器端口就可以访问。</p>
+
+<h3 id="同一node中pod间通信">同一Node中Pod间通信</h3>
+
+<p>同一Node中Pod的默认路由都是docker0的地址，由于它们关联在同一个docker0网桥上，地址网段相同，所有它们之间应当是能直接通信的。</p>
+
+<h3 id="不同node中pod间通信">不同Node中Pod间通信</h3>
+
+<h3 id="kubernetes中的service">kubernetes中的service</h3>
+
+<p>Service是一组Pod的服务抽象，相当于一组Pod的LB，负责将请求分发给对应的Pod。Service会为这个LB提供一个IP，一般称为ClusterIP。</p>
+
+<p><img src="/img/clusterip.jpg" alt="" /></p>
+
+<p><img src="/img/nodeport.jpg" alt="" /></p>
+
+<p><img src="/img/loadbalancer.jpg" alt="" /></p>
+
+<p><img src="/img/externalips.jpg" alt="" /></p>
+
+<h3 id="kube-proxy原理">kube-proxy原理</h3>
+
+<ul>
+<li>kube-proxy其实就是管理service的访问入口，包括集群内Pod到Service的访问和集群外访问service。</li>
+<li>kube-proxy管理sevice的Endpoints，该service对外暴露一个Virtual IP，也成为Cluster IP, 集群内通过访问这个Cluster IP:Port就能访问到集群内对应的serivce下的Pod。</li>
+<li>service是通过Selector选择的一组Pods的服务抽象，其实就是一个微服务，提供了服务的LB和反向代理的能力，而kube-proxy的主要作用就是负责service的实现。</li>
+<li>service另外一个重要作用是，一个服务后端的Pods可能会随着生存灭亡而发生IP的改变，service的出现，给服务提供了一个固定的IP，而无视后端Endpoint的变化。</li>
+</ul>
+
+<p>kube-proxy 提供了三种proxyMode:userspace、iptables、ipvs 目前最新的1.11版本中ipvs已经稳定。</p>
+
+<h3 id="iptables-mode">iptables-mode</h3>
+
+<p>它完全利用内核iptables来实现service的代理和LB，因为使用iptable NAT来完成转发，也存在不可忽视的性能损耗。另外，如果集群中存在上万的Service/Endpoint，那么Node上的iptables rules将会非常庞大，性能还会再打折扣。eg:</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql
+    role: service
+  name: mysql-service
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30964
+  type: NodePort
+  selector:
+    mysql-service: &quot;true&quot;
+</code></pre>
+
+<p>mysql-service对应的nodePort暴露出来的端口为30964，对应的cluster IP(10.254.162.44)的端口为3306，进一步对应于后端的pod的端口为3306,同时后端代理了两个pod，ip分别是192.168.125.129和192.168.125.131。先来看一下iptables：</p>
+
+<pre><code class="language-shell">$iptables -S -t nat
+...
+-A PREROUTING -m comment --comment &quot;kubernetes service portals&quot; -j KUBE-SERVICES
+-A OUTPUT -m comment --comment &quot;kubernetes service portals&quot; -j KUBE-SERVICES
+-A POSTROUTING -m comment --comment &quot;kubernetes postrouting rules&quot; -j KUBE-POSTROUTING
+-A KUBE-MARK-MASQ -j MARK --set-xmark 0x4000/0x4000
+-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp --dport 30964 -j KUBE-MARK-MASQ
+-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp --dport 30964 -j KUBE-SVC-67RL4FN6JRUPOJYM
+-A KUBE-SEP-ID6YWIT3F6WNZ47P -s 192.168.125.129/32 -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-MARK-MASQ
+-A KUBE-SEP-ID6YWIT3F6WNZ47P -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp -j DNAT --to-destination 192.168.125.129:3306
+-A KUBE-SEP-IN2YML2VIFH5RO2T -s 192.168.125.131/32 -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-MARK-MASQ
+-A KUBE-SEP-IN2YML2VIFH5RO2T -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp -j DNAT --to-destination 192.168.125.131:3306
+-A KUBE-SERVICES -d 10.254.162.44/32 -p tcp -m comment --comment &quot;default/mysql-service: cluster IP&quot; -m tcp --dport 3306 -j KUBE-SVC-67RL4FN6JRUPOJYM
+-A KUBE-SERVICES -m comment --comment &quot;kubernetes service nodeports; NOTE: this must be the last rule in this chain&quot; -m addrtype --dst-type LOCAL -j KUBE-NODEPORTS
+-A KUBE-SVC-67RL4FN6JRUPOJYM -m comment --comment &quot;default/mysql-service:&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-ID6YWIT3F6WNZ47P
+-A KUBE-SVC-67RL4FN6JRUPOJYM -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-SEP-IN2YML2VIFH5RO2T
+</code></pre>
+
+<p>首先如果是通过node的30964端口访问，则会进入到以下链:</p>
+
+<pre><code class="language-shell">-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp --dport 30964 -j KUBE-MARK-MASQ
+-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp --dport 30964 -j KUBE-SVC-67RL4FN6JRUPOJYM
+</code></pre>
+
+<p>然后进一步跳转到KUBE-SVC-67RL4FN6JRUPOJYM的链:</p>
+
+<pre><code class="language-shell">-A KUBE-SVC-67RL4FN6JRUPOJYM -m comment --comment &quot;default/mysql-service:&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-ID6YWIT3F6WNZ47P
+-A KUBE-SVC-67RL4FN6JRUPOJYM -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-SEP-IN2YML2VIFH5RO2T
+</code></pre>
+
+<p>这里利用了iptables的–probability的特性，使连接有50%的概率进入到KUBE-SEP-ID6YWIT3F6WNZ47P链，50%的概率进入到KUBE-SEP-IN2YML2VIFH5RO2T链。</p>
+
+<p>KUBE-SEP-ID6YWIT3F6WNZ47P的链的具体作用就是将请求通过DNAT发送到192.168.125.129的3306端口。</p>
+
+<pre><code class="language-shell">-A KUBE-SEP-ID6YWIT3F6WNZ47P -s 192.168.125.129/32 -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-MARK-MASQ
+-A KUBE-SEP-ID6YWIT3F6WNZ47P -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp -j DNAT --to-destination 192.168.125.129:3306
+</code></pre>
+
+<p>同理KUBE-SEP-IN2YML2VIFH5RO2T的作用是通过DNAT发送到192.168.125.131的3306端口。</p>
+
+<pre><code class="language-shell">-A KUBE-SEP-IN2YML2VIFH5RO2T -s 192.168.125.131/32 -m comment --comment &quot;default/mysql-service:&quot; -j KUBE-MARK-MASQ
+-A KUBE-SEP-IN2YML2VIFH5RO2T -p tcp -m comment --comment &quot;default/mysql-service:&quot; -m tcp -j DNAT --to-destination 192.168.125.131:3306
+</code></pre>
+
+<p>分析完nodePort的工作方式，接下里说一下clusterIP的访问方式。 对于直接访问cluster IP(10.254.162.44)的3306端口会直接跳转到KUBE-SVC-67RL4FN6JRUPOJYM。相当于减少了一条规则的转发。</p>
+
+<pre><code class="language-shell">-A KUBE-SERVICES -d 10.254.162.44/32 -p tcp -m comment --comment &quot;default/mysql-service: cluster IP&quot; -m tcp --dport 3306 -j KUBE-SVC-67RL4FN6JRUPOJYM
+</code></pre>
+
+<p>接下来的跳转方式同NodePort方式。</p>
+
+<h3 id="ipvs-mode">ipvs-mode</h3>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
+            
+          </div>
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/" data-toggle="tooltip" data-placement="top" title="在kunerentes使用高可用mysql-galera集群">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://l453595892.github.io">CraftLi的博客</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.45-DEV</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

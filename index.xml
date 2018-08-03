@@ -6,10 +6,19 @@
     <description>Recent content on CraftLi的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 24 Jul 2018 10:57:47 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 30 Jul 2018 14:46:01 +0800</lastBuildDate>
     
 	<atom:link href="https://l453595892.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kuberentes Network解析</title>
+      <link>https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Mon, 30 Jul 2018 14:46:01 +0800</pubDate>
+      
+      <guid>https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/</guid>
+      <description>本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中</description>
+    </item>
     
     <item>
       <title>在kunerentes使用高可用mysql-galera集群</title>
@@ -17,7 +26,7 @@
       <pubDate>Tue, 24 Jul 2018 10:57:47 +0800</pubDate>
       
       <guid>https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/</guid>
-      <description>本节的目的意在通过docker创建并测试mysql-galera集群并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务。</description>
+      <description>本节的目的意在通过docker创建并测试mysql-galera集群，并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务</description>
     </item>
     
   </channel>
