@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on CraftLi的博客</title>
+    <link>https://l453595892.github.io/tags/golang/</link>
+    <description>Recent content in Golang on CraftLi的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 17 Aug 2018 14:36:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://l453595892.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GoOneWeek</title>
+      <link>https://l453595892.github.io/2018/08/gooneweek/</link>
+      <pubDate>Fri, 17 Aug 2018 14:36:07 +0800</pubDate>
+      
+      <guid>https://l453595892.github.io/2018/08/gooneweek/</guid>
+      <description>golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正</description>
+    </item>
+    
+  </channel>
+</rss>
