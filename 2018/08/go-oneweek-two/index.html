@@ -5,20 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>GoOneWeek</title>
-  <meta property="og:title" content="GoOneWeek" />
-  <meta name="twitter:title" content="GoOneWeek" />
-  <meta name="description" content="golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正">
-  <meta property="og:description" content="golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正">
-  <meta name="twitter:description" content="golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正">
+  <title>Go Oneweek Two</title>
+  <meta property="og:title" content="Go Oneweek Two" />
+  <meta name="twitter:title" content="Go Oneweek Two" />
+  <meta name="description" content="搬运自：Go中国 golang 一周新鲜事 Golang在阿里巴巴调度系统Sigma中的实践 资源调度领域Sigma 主要思路是说资源调度领域的Sigma，共性">
+  <meta property="og:description" content="搬运自：Go中国 golang 一周新鲜事 Golang在阿里巴巴调度系统Sigma中的实践 资源调度领域Sigma 主要思路是说资源调度领域的Sigma，共性">
+  <meta name="twitter:description" content="搬运自：Go中国 golang 一周新鲜事 Golang在阿里巴巴调度系统Sigma中的实践 资源调度领域Sigma 主要思路是说资源调度领域的Sigma，共性">
   <meta name="author" content=""/>
   <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://l453595892.github.io/2018/08/gooneweek/" />
+  <meta property="og:url" content="https://l453595892.github.io/2018/08/go-oneweek-two/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="CraftLi的博客" />
 
   <meta name="generator" content="Hugo 0.45-DEV" />
-  <link rel="canonical" href="https://l453595892.github.io/2018/08/gooneweek/" />
+  <link rel="canonical" href="https://l453595892.github.io/2018/08/go-oneweek-two/" />
   <link rel="alternate" href="https://l453595892.github.io/index.xml" type="application/rss+xml" title="CraftLi的博客">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -140,13 +140,13 @@
           <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
               <div class="post-heading">
-                <h1>GoOneWeek</h1>
+                <h1>Go Oneweek Two</h1>
                   
                   
                     <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 17, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 24, 2018
   
   
   
@@ -167,13 +167,13 @@
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="post-heading">
-              <h1>GoOneWeek</h1>
+              <h1>Go Oneweek Two</h1>
                 
                 
                   <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 17, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 24, 2018
   
   
   
@@ -196,32 +196,40 @@
       <article role="main" class="blog-post">
         
 
+<p>搬运自：Go中国</p>
+
 <p>golang 一周新鲜事</p>
 
-<h2 id="grpc基于golang和java的简单实现">gRPC基于Golang和Java的简单实现</h2>
+<h2 id="golang在阿里巴巴调度系统sigma中的实践">Golang在阿里巴巴调度系统Sigma中的实践</h2>
 
-<p>RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正常服务端的接口服务是提供给用户端(在Web开发中就是浏览器)或者自身调用的，也就是本地过程调用。和本地过程调用相对的就是：假如两个服务端不在一个进程内怎么进行数据交互？使用RPC。尤其是现在微服务的大量实践，服务与服务之间的调用不可避免，RPC更显得尤为重要。<br />
-  <br> 原文链接： <a href="http://jia-shun.cn/2018/08/12/gRPC/">http://jia-shun.cn/2018/08/12/gRPC/</a></p>
+<p>资源调度领域Sigma<br />
+主要思路是说资源调度领域的Sigma，共性的借鉴性的东西，阿里特有的就不讲，更多在Q&amp;A里面。因为涉及到实践会聚焦工程的问题，所以我会讲一些架构设计与语言的选择，和并发模式下面任务粒度怎么样去选择，还有一些比较大型、综合的解决方案。</p>
 
-<h2 id="golang新手容易犯的三个错误">golang新手容易犯的三个错误</h2>
+<p><br> 原文链接：<a href="https://mp.weixin.qq.com/s/MITVLv-61HTOvFlcU12YMw">https://mp.weixin.qq.com/s/MITVLv-61HTOvFlcU12YMw</a></p>
 
-<p>从golang小白到成为golang工程师快两个月了，我要分享一下新手在开发中常犯的错误，都是我亲自踩过的坑。这些错误中有些会导致无法通过编译，这种错容易发现，而有些错误在编译时不会抛出，甚至在运行时也不会panic，如果缺少相关的知识，挠破头皮都搞不清楚bug出在哪。<br />
-  <br> 原文链接：<a href="https://zhuanlan.zhihu.com/p/41418726">https://zhuanlan.zhihu.com/p/41418726</a></p>
+<h2 id="用go创建一款跨平台桌面游戏">用Go创建一款跨平台桌面游戏</h2>
 
-<h2 id="蚂蚁金服开源go语言版service-mesh数据平面sofamosn性能报告">蚂蚁金服开源Go语言版Service Mesh数据平面SOFAMosn性能报告</h2>
+<p>几个月前，我摆弄着用Go编写太空入侵者。我写它很开心，但是输出只在iTerm2上工作，因为它使用了终端的一个特定特性。为了玩这个游戏，你必须下载iTerm2并在命令行上运行它。我想，如果我能把它作为一款真正的桌面游戏来展示，那将会是一件很有趣的事情。</p>
 
-<p>7月30号，第二届Service Mesh Meetup北京站，蚂蚁金服的高级技术专家朵晓东（奕杉）为我们分享了<a href="https://mp.weixin.qq.com/s/DJ_IeDswGGFQiWqJ75pmig">开源 | Service Mesh 数据平面 SOFAMosn 深层揭秘</a>，本文是来自蚂蚁金服系统部应用网络组无钩同学对SOFAMosn 0.1.0的性能测试报告。<br />
-  <br> 原文链接：<a href="https://mp.weixin.qq.com/s/EMK6ZVmDcBQHcVilBPaSeg">https://mp.weixin.qq.com/s/EMK6ZVmDcBQHcVilBPaSeg</a></p>
+<p><br> 原文链接：<a href="https://sausheong.github.io/posts/cross-platform-games-with-go/">https://sausheong.github.io/posts/cross-platform-games-with-go/</a></p>
 
-<h2 id="从go高性能日志库zap看如何实现高性能go组件">从Go高性能日志库zap看如何实现高性能Go组件</h2>
+<h2 id="go-标准库-http-fileserver-实现静态文件服务">Go 标准库 http.FileServer 实现静态文件服务</h2>
 
-<p>zap是uber开源的Go高性能日志库。本文作者深入分析了zap的架构设计和具体实现，揭示了zap高效的原因。并且对如何构建高性能Go语言库给出自己的建议。<br />
-  <br> 原文链接： <a href="https://mp.weixin.qq.com/s/i0bMh_gLLrdnhAEWlF-xDw">https://mp.weixin.qq.com/s/i0bMh_gLLrdnhAEWlF-xDw</a></p>
+<p>http.FileServer 方法属于标准库 net/http ，返回一个使用 FileSystem 接口 root 提供文件访问服务的 HTTP 处理器。可以方便的实现静态文件服务器。</p>
 
-<h2 id="修改并编译golang源码">修改并编译golang源码</h2>
+<p><br> 原文链接：<a href="https://segmentfault.com/a/1190000016086653">https://segmentfault.com/a/1190000016086653</a></p>
 
-<p>最近为了做Hyperledger Fabric国密改造，涉及到了golang源码的改动。特将操作过程整理如下，以供参考。<br />
-  <br> 原文链接： <a href="https://www.jianshu.com/p/3ca7d1a649a8">https://www.jianshu.com/p/3ca7d1a649a8</a></p>
+<h2 id="golang-调度剖析-第一部分">Golang - 调度剖析【第一部分】</h2>
+
+<p>首先，Golang 调度器的设计和实现让我们的 Go 程序在多线程执行时效率更高，性能更好。这要归功于 Go 调度器与操作系统（OS）调度器的协同合作。不过在本篇文章中，多线程 Go 程序在设计和实现上是否与调度器的工作原理完全契合不是重点。重要的是对系统调度器和 Go 调度器，它们是如何正确地设计多线程程序，有一个全面且深入的理解。</p>
+
+<p><br> 原文链接： <a href="https://segmentfault.com/a/1190000016038785">https://segmentfault.com/a/1190000016038785</a></p>
+
+<h2 id="go中的依赖注入">Go中的依赖注入</h2>
+
+<p>我已经编写了一个小的实用程序来处理Go中的依赖注入（包括tinrab/kit)。目标是简单的，并且适合我当前的副项目。</p>
+
+<p><br> 原文链接：<a href="https://outcrawl.com/go-dependency-injection/">https://outcrawl.com/go-dependency-injection/</a></p>
 
 
         
@@ -239,13 +247,9 @@
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="Kuberentes Network解析">&larr; Previous Post</a>
+              <a href="https://l453595892.github.io/2018/08/gooneweek/" data-toggle="tooltip" data-placement="top" title="GoOneWeek">&larr; Previous Post</a>
             </li>
           
-          
-            <li class="next">
-              <a href="https://l453595892.github.io/2018/08/go-oneweek-two/" data-toggle="tooltip" data-placement="top" title="Go Oneweek Two">Next Post &rarr;</a>
-            </li>
           
         </ul>
       
