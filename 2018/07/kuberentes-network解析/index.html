@@ -384,6 +384,38 @@ spec:
 
 <h3 id="ipvs-mode">ipvs-mode</h3>
 
+<p>利用ipvs模式来使得网络性能比单纯使用iptables模式来的更快。</p>
+
+<p>其规则就是利用ipvs模块来在链上增加转发的机制来解决跳转的问题</p>
+
+<p>[root@master ~]# ipvsadm
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  master:31000 rr
+  -&gt; 10.0.0.8:http                Masq    1      0          0
+  -&gt; 10.0.1.9:http                Masq    1      0          0
+TCP  master:31000 rr
+  -&gt; 10.0.0.8:http                Masq    1      0          0
+  -&gt; 10.0.1.9:http                Masq    1      0          0
+TCP  master:31000 rr
+  -&gt; 10.0.0.8:http                Masq    1      0          0
+  -&gt; 10.0.1.9:http                Masq    1      0          0
+TCP  master:https rr
+  -&gt; master:sun-sr-https          Masq    1      2          0
+TCP  master:domain rr
+  -&gt; 10.0.0.3:domain              Masq    1      0          0
+  -&gt; 10.0.1.3:domain              Masq    1      0          0
+TCP  master:http rr
+  -&gt; 10.0.0.8:http                Masq    1      0          0
+  -&gt; 10.0.1.9:http                Masq    1      0          0
+TCP  localhost:31000 rr
+  -&gt; 10.0.0.8:http                Masq    1      0          0
+  -&gt; 10.0.1.9:http                Masq    1      0          0
+UDP  master:domain rr
+  -&gt; 10.0.0.3:domain              Masq    1      0          0
+  -&gt; 10.0.1.3:domain              Masq    1      0          0</p>
+
 
         
           <div class="blog-tags">
