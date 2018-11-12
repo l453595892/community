@@ -5,17 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>CraftLi的博客</title>
-  <meta property="og:title" content="CraftLi的博客" />
-  <meta name="twitter:title" content="CraftLi的博客" />
+  <title>Go Oneweek Three</title>
+  <meta property="og:title" content="Go Oneweek Three" />
+  <meta name="twitter:title" content="Go Oneweek Three" />
+  <meta name="description" content="搬运自：Go中国 golang 一周新鲜事 Golang通道的无阻塞读写 无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据">
+  <meta property="og:description" content="搬运自：Go中国 golang 一周新鲜事 Golang通道的无阻塞读写 无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据">
+  <meta name="twitter:description" content="搬运自：Go中国 golang 一周新鲜事 Golang通道的无阻塞读写 无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据">
   <meta name="author" content=""/>
   <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://l453595892.github.io/" />
+  <meta property="og:url" content="https://l453595892.github.io/2018/11/go-oneweek-three/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="CraftLi的博客" />
 
   <meta name="generator" content="Hugo 0.45-DEV" />
-  <link rel="canonical" href="https://l453595892.github.io/" />
+  <link rel="canonical" href="https://l453595892.github.io/2018/11/go-oneweek-three/" />
   <link rel="alternate" href="https://l453595892.github.io/index.xml" type="application/rss+xml" title="CraftLi的博客">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -126,7 +129,7 @@
 
 
   
-    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/github-kubernetes.png" ></div>
+    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/go-oneweek.jpg" data-img-desc-1="golang"></div>
   
 
   <header class="header-section has-img">
@@ -136,14 +139,20 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-              <div class="page-heading">
-                <h1>CraftLi的博客</h1>
+              <div class="post-heading">
+                <h1>Go Oneweek Three</h1>
                   
-                    
-                      <hr class="small">
-                      <span class="page-subheading">专注于应用和分享Kubernetes&amp;Golang&amp;ServiceMesh</span>
-                    
                   
+                    <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on November 12, 2018
+  
+  
+  
+</span>
+
+
                   
               </div>
             </div>
@@ -157,14 +166,20 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="page-heading">
-              <h1>CraftLi的博客</h1>
+            <div class="post-heading">
+              <h1>Go Oneweek Three</h1>
                 
-                  
-                    <hr class="small">
-                    <span class="page-subheading">专注于应用和分享Kubernetes&amp;Golang&amp;ServiceMesh</span>
-                  
                 
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on November 12, 2018
+  
+  
+  
+</span>
+
+
                 
             </div>
           </div>
@@ -175,187 +190,75 @@
 
 
     
-  <div role="main" class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
         
 
-        <div class="posts-list">
-          
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/11/go-oneweek-three/">
-                <h2 class="post-title">Go Oneweek Three</h2>
-                
-                
-              </a>
+<p>搬运自：Go中国</p>
 
-              <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on November 12, 2018
-  
-  
-  
-</span>
+<p>golang 一周新鲜事</p>
 
+<h2 id="golang通道的无阻塞读写">Golang通道的无阻塞读写</h2>
 
-              <div class="post-entry">
-                
-                  搬运自：Go中国 golang 一周新鲜事 Golang通道的无阻塞读写 无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据
-                  <a href="https://l453595892.github.io/2018/11/go-oneweek-three/" class="post-read-more">[Read More]</a>
-                
-              </div>
+<p>无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据或者写数据阻塞在那里，有1个唯一的解决办法，那就是使用select结构。这篇文章会介绍，哪些情况会存在阻塞，以及如何使用select解决阻塞。</p>
 
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
-                  
-                </div>
-              
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/08/go-oneweek-two/">
-                <h2 class="post-title">Go Oneweek Two</h2>
-                
-                
-              </a>
+<p><br> 原文链接：<a href="https://www.jianshu.com/p/3b24e909905f">https://www.jianshu.com/p/3b24e909905f</a></p>
 
-              <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 24, 2018
-  
-  
-  
-</span>
+<h2 id="如何在go的函数中得到调用者函数名">如何在Go的函数中得到调用者函数名?</h2>
 
+<p>有时候在Go的函数调用的过程中，我们需要知道函数被谁调用，比如打印日志信息等。例如下面的函数，我们希望在日志中打印出调用者的名字。最简单的方式就是硬编码。 因为在编译之前，我们肯定知道打印的时候所在哪个函数，但是更好的方式是编写一个通用的函数，见文中例子。</p>
 
-              <div class="post-entry">
-                
-                  搬运自：Go中国 golang 一周新鲜事 Golang在阿里巴巴调度系统Sigma中的实践 资源调度领域Sigma 主要思路是说资源调度领域的Sigma，共性
-                  <a href="https://l453595892.github.io/2018/08/go-oneweek-two/" class="post-read-more">[Read More]</a>
-                
-              </div>
+<p><br> 原文链接：<a href="https://colobu.com/2018/11/03/get-function-name-in-go/">https://colobu.com/2018/11/03/get-function-name-in-go/</a></p>
 
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
-                  
-                </div>
-              
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/08/gooneweek/">
-                <h2 class="post-title">GoOneWeek</h2>
-                
-                
-              </a>
+<h2 id="go语言字符串高效拼接-一">Go语言字符串高效拼接（一）</h2>
 
-              <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 17, 2018
-  
-  
-  
-</span>
+<p>在Go语言（golang）中，对于字符串的拼接处理有很多种方法，那么那种方法才是效率最高的呢？因为内存很贵、性能很重要，有时候不慎字符串的转换和拷贝，就可以把你的内存吃光，性能低下，不得不考虑。</p>
 
+<p><br> 原文链接：<a href="https://juejin.im/post/5be23a01518825697344f05e">https://juejin.im/post/5be23a01518825697344f05e</a></p>
 
-              <div class="post-entry">
-                
-                  golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正
-                  <a href="https://l453595892.github.io/2018/08/gooneweek/" class="post-read-more">[Read More]</a>
-                
-              </div>
+<h2 id="kubernetes何时才会消于无形却又无处不在">Kubernetes何时才会消于无形却又无处不在？</h2>
 
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
-                  
-                </div>
-              
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/">
-                <h2 class="post-title">Kuberentes Network解析</h2>
-                
-                
-              </a>
+<p>可以肯定地说，掌舵Kubernetes以及相关监控工具Prometheus的云原生计算基金会（CNCF），已经完成了Google及其成员所安排的工作，就是将Kubernetes转变成一个由横跨各种平台、供应商和客户的生态系统所支撑的工具，这也是为什么几个月前它在CNCF的状态从孵化变成了毕业，一种正式通过的礼仪，同时也有了很多重量级的生产环境用户。</p>
 
-              <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 30, 2018
-  
-  
-  
-</span>
+<p><br> 原文链接：<a href="https://mp.weixin.qq.com/s/80_uryVtlHnIFlgZDPy2Kw">https://mp.weixin.qq.com/s/80_uryVtlHnIFlgZDPy2Kw</a></p>
 
+<h2 id="go结构体-struct-和方法-method">go结构体(struct)和方法(method)</h2>
 
-              <div class="post-entry">
-                
-                  本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中
-                  <a href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/" class="post-read-more">[Read More]</a>
-                
-              </div>
+<p>go中没有对象这一概念，所以采用了结构体的概念，结构体在go中有着非常重要的位置。结构体是值类型，所以可以使用new函数来创建。结构体中字段必须唯一。</p>
 
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
-                  
-                </div>
-              
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/">
-                <h2 class="post-title">在kunerentes使用高可用mysql-galera集群</h2>
-                
-                
-              </a>
+<p><br> 原文链接：<a href="https://blog.csdn.net/u013255127/article/details/83824434">https://blog.csdn.net/u013255127/article/details/83824434</a></p>
 
-              <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 24, 2018
-  
-  
-  
-</span>
-
-
-              <div class="post-entry">
-                
-                  本节的目的意在通过docker创建并测试mysql-galera集群，并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务
-                  <a href="https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
-                  
-                    <a href="https://l453595892.github.io/tags/mysql/">mysql</a>&nbsp;
-                  
-                </div>
-              
-            </article>
-          
-        </div>
 
         
-      </div>
+          <div class="blog-tags">
+            
+              <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
+            
+          </div>
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://l453595892.github.io/2018/08/go-oneweek-two/" data-toggle="tooltip" data-placement="top" title="Go Oneweek Two">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
     </div>
   </div>
+</div>
 
     <footer>
   <div class="container">
