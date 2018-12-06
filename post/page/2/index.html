@@ -141,8 +141,8 @@
         <div class="posts-list">
           
             <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/12/kuberentes-1.11%E5%BC%80%E5%90%AFipvs-%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/">
-                <h2 class="post-title">Kuberentes 1.11(开启ipvs) 二进制安装过程</h2>
+              <a href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/">
+                <h2 class="post-title">Kuberentes Network解析</h2>
 
                 
               </a>
@@ -151,7 +151,7 @@
                 <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 6, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 30, 2018
   
   
   
@@ -161,17 +161,15 @@
               </p>
               <div class="post-entry">
                 
-                  K8s 1.11 二进制安装过程 关闭selinux和防火墙 sed -ri 's#(SELINUX=).*#\1disabled#' /etc/selinux/config setenforce 0 systemctl disable firewalld systemctl stop firewalld 关闭swap swapoff -a 配置转发相关参数，否则可能会出错 cat &lt;&lt;EOF &gt; /etc/sysctl.d/k8s.conf net.bridge.bridge-nf-call-ip6tables = 1 net.bridge.bridge-nf-call-iptables = 1 vm.swappiness=0 EOF
-                  <a href="https://l453595892.github.io/2018/12/kuberentes-1.11%E5%BC%80%E5%90%AFipvs-%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" class="post-read-more">[Read More]</a>
+                  本章的目的在讲解docker中的基础网络原理（none网络、hosts网络、bridge网络以及跨主机网络实现），以及kuberetnes中
+                  <a href="https://l453595892.github.io/2018/07/kuberentes-network%E8%A7%A3%E6%9E%90/" class="post-read-more">[Read More]</a>
                 
               </div>
 
               
                 <div class="blog-tags">
                   
-                    <a href="https://l453595892.github.io/tags/kubeernetes/">kubeernetes</a>&nbsp;
-                  
-                    <a href="https://l453595892.github.io/tags/install/">install</a>&nbsp;
+                    <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
                   
                 </div>
               
@@ -179,8 +177,8 @@
             </article>
           
             <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/12/kuberentes-1.12-kubeadm%E5%AE%89%E8%A3%85/">
-                <h2 class="post-title">Kuberentes 1.12 kubeadm安装</h2>
+              <a href="https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/">
+                <h2 class="post-title">在kunerentes使用高可用mysql-galera集群</h2>
 
                 
               </a>
@@ -189,7 +187,7 @@
                 <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 6, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on July 24, 2018
   
   
   
@@ -199,125 +197,17 @@
               </p>
               <div class="post-entry">
                 
-                  使用kubeadm安装Kubernetes 1.12 准备 系统配置 在安装之前，需要先做如下准备。两台CentOS 7.4主机如下： cat /etc/hosts 192.168.61.11 node1 192.168.61.12 node2 各节点禁用
-                  <a href="https://l453595892.github.io/2018/12/kuberentes-1.12-kubeadm%E5%AE%89%E8%A3%85/" class="post-read-more">[Read More]</a>
+                  本节的目的意在通过docker创建并测试mysql-galera集群，并且部署在kubernetes中通过集群内部使用或是给集群外部提供服务
+                  <a href="https://l453595892.github.io/2018/07/%E5%9C%A8kunerentes%E4%BD%BF%E7%94%A8%E9%AB%98%E5%8F%AF%E7%94%A8mysql-galera%E9%9B%86%E7%BE%A4/" class="post-read-more">[Read More]</a>
                 
               </div>
 
               
                 <div class="blog-tags">
                   
-                    <a href="https://l453595892.github.io/tags/kubeernetes/">kubeernetes</a>&nbsp;
+                    <a href="https://l453595892.github.io/tags/kubernetes/">kubernetes</a>&nbsp;
                   
-                    <a href="https://l453595892.github.io/tags/install/">install</a>&nbsp;
-                  
-                </div>
-              
-
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/11/go-oneweek-three/">
-                <h2 class="post-title">Go Oneweek Three</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on November 12, 2018
-  
-  
-  
-</span>
-
-
-              </p>
-              <div class="post-entry">
-                
-                  搬运自：Go中国 golang 一周新鲜事 Golang通道的无阻塞读写 无论是无缓冲通道，还是有缓冲通道，都存在阻塞的情况，但其实有些情况，我们并不想读数据
-                  <a href="https://l453595892.github.io/2018/11/go-oneweek-three/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
-                  
-                </div>
-              
-
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/08/go-oneweek-two/">
-                <h2 class="post-title">Go Oneweek Two</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 24, 2018
-  
-  
-  
-</span>
-
-
-              </p>
-              <div class="post-entry">
-                
-                  搬运自：Go中国 golang 一周新鲜事 Golang在阿里巴巴调度系统Sigma中的实践 资源调度领域Sigma 主要思路是说资源调度领域的Sigma，共性
-                  <a href="https://l453595892.github.io/2018/08/go-oneweek-two/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
-                  
-                </div>
-              
-
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://l453595892.github.io/2018/08/gooneweek/">
-                <h2 class="post-title">GoOneWeek</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 17, 2018
-  
-  
-  
-</span>
-
-
-              </p>
-              <div class="post-entry">
-                
-                  golang 一周新鲜事 gRPC基于Golang和Java的简单实现 RPC：Remote Procedure Call，远程过程调用。简单来说就是两个进程之间的数据交互。正
-                  <a href="https://l453595892.github.io/2018/08/gooneweek/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://l453595892.github.io/tags/golang/">golang</a>&nbsp;
+                    <a href="https://l453595892.github.io/tags/mysql/">mysql</a>&nbsp;
                   
                 </div>
               
@@ -328,10 +218,10 @@
         
           <ul class="pager main-pager">
             
-            
-              <li class="next">
-                <a href="/post/page/2/">Older Posts &rarr;</a>
+              <li class="previous">
+                <a href="/post/page/1/">&larr; Newer Posts</a>
               </li>
+            
             
           </ul>
         

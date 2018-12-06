@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kuberentes 1.12 kubeadm安装</title>
+  <meta property="og:title" content="Kuberentes 1.12 kubeadm安装" />
+  <meta name="twitter:title" content="Kuberentes 1.12 kubeadm安装" />
+  <meta name="description" content="使用kubeadm安装Kubernetes 1.12 准备 系统配置 在安装之前，需要先做如下准备。两台CentOS 7.4主机如下： cat /etc/hosts 192.168.61.11 node1 192.168.61.12 node2 各节点禁用">
+  <meta property="og:description" content="使用kubeadm安装Kubernetes 1.12 准备 系统配置 在安装之前，需要先做如下准备。两台CentOS 7.4主机如下： cat /etc/hosts 192.168.61.11 node1 192.168.61.12 node2 各节点禁用">
+  <meta name="twitter:description" content="使用kubeadm安装Kubernetes 1.12 准备 系统配置 在安装之前，需要先做如下准备。两台CentOS 7.4主机如下： cat /etc/hosts 192.168.61.11 node1 192.168.61.12 node2 各节点禁用">
+  <meta name="author" content=""/>
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://l453595892.github.io/2018/12/kuberentes-1.12-kubeadm%E5%AE%89%E8%A3%85/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CraftLi的博客" />
+
+  <meta name="generator" content="Hugo 0.45-DEV" />
+  <link rel="canonical" href="https://l453595892.github.io/2018/12/kuberentes-1.12-kubeadm%E5%AE%89%E8%A3%85/" />
+  <link rel="alternate" href="https://l453595892.github.io/index.xml" type="application/rss+xml" title="CraftLi的博客">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://l453595892.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://l453595892.github.io/css/syntax.css" /><link rel="stylesheet" href="https://l453595892.github.io/css/codeblock.css" />
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://l453595892.github.io">CraftLi的博客</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="The git page" href="https://github.com/l453595892">The git page</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/kubernetes-install-kubeadm" data-img-desc-1="美国西部"></div>
+  
+
+  <header class="header-section has-img">
+    
+      <div class="intro-header big-img">
+        
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+              <div class="post-heading">
+                <h1>Kuberentes 1.12 kubeadm安装</h1>
+                  
+                  
+                    <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 6, 2018
+  
+  
+  
+</span>
+
+
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="img-desc" style="display: inline;"></span>
+      </div>
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Kuberentes 1.12 kubeadm安装</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on December 6, 2018
+  
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="使用kubeadm安装kubernetes-1-12">使用kubeadm安装Kubernetes 1.12</h1>
+
+<h2 id="准备">准备</h2>
+
+<h3 id="系统配置">系统配置</h3>
+
+<ul>
+<li>在安装之前，需要先做如下准备。两台CentOS 7.4主机如下：
+<code>
+cat /etc/hosts
+192.168.61.11 node1
+192.168.61.12 node2
+</code></li>
+<li>各节点禁用防火墙：</li>
+</ul>
+
+<pre><code>systemctl stop firewalld
+systemctl disable firewalld
+</code></pre>
+
+<ul>
+<li>禁用SELINUX：
+<code>
+setenforce 0
+</code></li>
+<li>创建/etc/sysctl.d/k8s.conf文件，添加如下内容：
+<code>
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+</code></li>
+<li>执行命令使修改生效。
+<code>
+modprobe br_netfilter
+sysctl -p /etc/sysctl.d/k8s.conf
+</code></li>
+</ul>
+
+<h3 id="安装docker">安装Docker</h3>
+
+<pre><code>yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+</code></pre>
+
+<ul>
+<li>确认一下iptables filter表中FOWARD链的默认策略(pllicy)为ACCEPT。
+```
+iptables -nvL
+Chain INPUT (policy ACCEPT 263 packets, 19209 bytes)
+pkts bytes target     prot opt in     out     source               destination</li>
+</ul>
+
+<p>Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DOCKER-USER  all  &ndash;  *      *       0.0.0.0/0            0.0.0.0/0
+    0     0 DOCKER-ISOLATION-STAGE-1  all  &ndash;  *      *       0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     all  &ndash;  *      docker0  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+    0     0 DOCKER     all  &ndash;  *      docker0  0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     all  &ndash;  docker0 !docker0  0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     all  &ndash;  docker0 docker0  0.0.0.0/0            0.0.0.0/0</p>
+
+<pre><code>
+**Docker从1.13版本开始调整了默认的防火墙规则，禁用了iptables filter表中FOWARD链，这样会引起Kubernetes集群中跨Node的Pod无法通信。但这里通过安装docker 1806，发现默认策略又改回了ACCEPT，这个不知道是从哪个版本改回的，因为我们线上版本使用的1706还是需要手动调整这个策略的。**
+
+## 使用kubeadm部署Kubernetes
+### 安装kubeadm和kubelet
+* 下面在各节点安装kubeadm和kubelet：
+</code></pre>
+
+<p>cat &lt;<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=<a href="https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64">https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64</a>
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=<a href="https://packages.cloud.google.com/yum/doc/yum-key.gpg">https://packages.cloud.google.com/yum/doc/yum-key.gpg</a>
+        <a href="https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg">https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg</a>
+EOF</p>
+
+<pre><code>
+* 从安装结果可以看出还安装了cri-tools, kubernetes-cni, socat三个依赖：
+* 官方从Kubernetes 1.9开始就将cni依赖升级到了0.6.0版本，在当前1.12中仍然是这个版本
+* socat是kubelet的依赖
+* cri-tools是CRI(Container Runtime Interface)容器运行时接口的命令行工具
+
+* Kubernetes 1.8开始要求关闭系统的Swap，如果不关闭，默认配置下kubelet将无法启动。
+
+</code></pre>
+
+<p>swapoff -a</p>
+
+<p>#修改 /etc/fstab 文件，注释掉 SWAP 的自动挂载，使用free -m确认swap已经关闭。 swappiness参数调整，修改/etc/sysctl.d/k8s.conf添加下面一行
+vm.swappiness=0</p>
+
+<p>sysctl -p /etc/sysctl.d/k8s.conf</p>
+
+<pre><code>
+### 使用kubeadm init初始化集群
+
+* 在各节点开机启动kubelet服务：
+</code></pre>
+
+<p>systemctl enable kubelet.service</p>
+
+<pre><code>
+* 接下来使用kubeadm初始化集群，选择node1作为Master Node，在node1上执行下面的命令：
+</code></pre>
+
+<p>kubeadm init <br />
+  &ndash;kubernetes-version=v1.12.0 <br />
+  &ndash;pod-network-cidr=10.244.0.0/16 <br />
+  &ndash;apiserver-advertise-address=192.168.61.11</p>
+
+<pre><code>
+### 其中有以下关键内容：
+
+* [kubelet] 生成kubelet的配置文件”/var/lib/kubelet/config.yaml”
+* [certificates]生成相关的各种证书
+* [kubeconfig]生成相关的kubeconfig文件
+* [bootstraptoken]生成token记录下来，后边使用kubeadm join往集群中添加节点时会用到
+* 下面的命令是配置常规用户如何使用kubectl访问集群：
+</code></pre>
+
+<p>mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config</p>
+
+<pre><code>* 最后给出了将节点加入集群的命令kubeadm join 192.168.61.11:6443 –token zalj3i.q831ehufqb98d1ic –discovery-token-ca-cert-hash sha256:6ee48b19ba61a2dda77f6b60687c5fd11072ab898cfdfef32a68821d1dbe8efa
+* 查看一下集群状态：
+</code></pre>
+
+<p>kubectl get cs
+NAME                 STATUS    MESSAGE              ERROR
+controller-manager   Healthy   ok
+scheduler            Healthy   ok
+etcd-0               Healthy   {&ldquo;health&rdquo;: &ldquo;true&rdquo;}</p>
+
+<pre><code>### 安装Pod Network
+* 接下来安装flannel network add-on：
+</code></pre>
+
+<p>mkdir -p ~/k8s/
+cd ~/k8s
+wget <a href="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml">https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</a>
+kubectl apply -f  kube-flannel.yml</p>
+
+<p>clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.extensions/kube-flannel-ds-amd64 created
+daemonset.extensions/kube-flannel-ds-arm64 created
+daemonset.extensions/kube-flannel-ds-arm created
+daemonset.extensions/kube-flannel-ds-ppc64le created
+daemonset.extensions/kube-flannel-ds-s390x created</p>
+
+<pre><code>* 本次按上面的步骤部署flannel，发现没有效果，查看一下集群中的daemonset：
+</code></pre>
+
+<p>kubectl get ds -l app=flannel -n kube-system
+NAME                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                     AGE
+kube-flannel-ds-amd64     0         0         0       0            0           beta.kubernetes.i/oarch=amd64     17s
+kube-flannel-ds-arm       0         0         0       0            0           beta.kubernetes.io/arch=arm       17s
+kube-flannel-ds-arm64     0         0         0       0            0           beta.kubernetes.io/arch=arm64     17s
+kube-flannel-ds-ppc64le   0         0         0       0            0           beta.kubernetes.io/arch=ppc64le   17s
+kube-flannel-ds-s390x     0         0         0       0            0           beta.kubernetes.io/arch=s390x     17s</p>
+
+<pre><code>* 使用kubectl get pod –all-namespaces -o wide确保所有的Pod都处于Running状态。
+</code></pre>
+
+<p>kubectl get pod &ndash;all-namespaces -o wide
+NAMESPACE     NAME                            READY   STATUS    RESTARTS   AGE     IP              NODE    NOMINATED NODE
+kube-system   coredns-576cbf47c7-njt7l        <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    10.244.0.3      node1   <none>
+kube-system   coredns-576cbf47c7-vg2gd        <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    10.244.0.2      node1   <none>
+kube-system   etcd-node1                      <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    192.168.61.11   node1   <none>
+kube-system   kube-apiserver-node1            <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    192.168.61.11   node1   <none>
+kube-system   kube-controller-manager-node1   <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    192.168.61.11   node1   <none>
+kube-system   kube-flannel-ds-amd64-bxtqh     <sup>1</sup>&frasl;<sub>1</sub>     Running   0          2m     192.168.61.11   node1   <none>
+kube-system   kube-proxy-fb542                <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    192.168.61.11   node1   <none>
+kube-system   kube-scheduler-node1            <sup>1</sup>&frasl;<sub>1</sub>     Running   0          12m    192.168.61.11   node1   <none></p>
+
+<pre><code>### master node参与工作负载
+</code></pre>
+
+<p>kubectl taint nodes node1 node-role.kubernetes.io/master-
+node &ldquo;node1&rdquo; untainted</p>
+
+<pre><code>### 测试DNS
+</code></pre>
+
+<p>kubectl run curl &ndash;image=radial/busyboxplus:curl -it
+kubectl run &ndash;generator=deployment/apps.v1beta1 is DEPRECATED and will be removed in a future version. Use kubectl create instead.
+If you don&rsquo;t see a command prompt, try pressing enter.
+[ root@curl-5cc7b478b6-r997p:/ ]$ nslookup kubernetes.default
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local</p>
+
+<p>Name:      kubernetes.default
+Address 1: 10.96.0.1 kubernetes.default.svc.cluster.local</p>
+
+<pre><code>
+### 向Kubernetes集群中添加Node节点
+</code></pre>
+
+<p>kubeadm join 192.168.61.11:6443 &ndash;token zalj3i.q831ehufqb98d1ic &ndash;discovery-token-ca-cert-hash sha256:6ee48b19ba61a2dda77f6b60687c5fd11072ab898cfdfef32a68821d1dbe8efa <br />
+ &ndash;ignore-preflight-errors=Swap</p>
+
+<p>[preflight] running pre-flight checks
+        [WARNING RequiredIPVSKernelModulesAvailable]: the IPVS proxier will not be used, because the following required kernel modules are not loaded: [ip_vs_rr ip_vs_wrr ip_vs_sh ip_vs] or no builtin kernel ipvs support: map[ip_vs:{} ip_vs_rr:{} ip_vs_wrr:{} ip_vs_sh:{} nf_conntrack_ipv4:{}]
+you can solve this problem with following methods:
+ 1. Run &lsquo;modprobe &ndash; &rsquo; to load missing kernel modules;
+2. Provide the missing builtin kernel ipvs support</p>
+
+<pre><code>    [WARNING Swap]: running with swap on is not supported. Please disable swap
+</code></pre>
+
+<p>[discovery] Trying to connect to API Server &ldquo;192.168.61.11:6443&rdquo;
+[discovery] Created cluster-info discovery client, requesting info from &ldquo;<a href="https://192.168.61.11:6443&quot;">https://192.168.61.11:6443&quot;</a>
+[discovery] Requesting info from &ldquo;<a href="https://192.168.61.11:6443&quot;">https://192.168.61.11:6443&quot;</a> again to validate TLS against the pinned public key
+[discovery] Cluster info signature and contents are valid and TLS certificate validates against pinned roots, will use API Server &ldquo;192.168.61.11:6443&rdquo;
+[discovery] Successfully established connection with API Server &ldquo;192.168.61.11:6443&rdquo;
+[kubelet] Downloading configuration for the kubelet from the &ldquo;kubelet-config-1.12&rdquo; ConfigMap in the kube-system namespace
+[kubelet] Writing kubelet configuration to file &ldquo;/var/lib/kubelet/config.yaml&rdquo;
+[kubelet] Writing kubelet environment file with flags to file &ldquo;/var/lib/kubelet/kubeadm-flags.env&rdquo;
+[preflight] Activating the kubelet service
+[tlsbootstrap] Waiting for the kubelet to perform the TLS Bootstrap&hellip;
+[patchnode] Uploading the CRI Socket information &ldquo;/var/run/dockershim.sock&rdquo; to the Node API object &ldquo;node2&rdquo; as an annotation</p>
+
+<p>This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.</p>
+
+<p>Run &lsquo;kubectl get nodes&rsquo; on the master to see this node join the cluster.</p>
+
+<pre><code>* node2加入集群很是顺利，下面在master节点上执行命令查看集群中的节点：
+</code></pre>
+
+<p>kubectl get nodes
+NAME      STATUS    ROLES     AGE       VERSION
+node1     Ready     master    26m       v1.12.0
+node2     Ready     <none>    2m        v1.12.0
+```</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://l453595892.github.io/tags/kubeernetes/">kubeernetes</a>&nbsp;
+            
+              <a href="https://l453595892.github.io/tags/install/">install</a>&nbsp;
+            
+          </div>
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://l453595892.github.io/2018/11/go-oneweek-three/" data-toggle="tooltip" data-placement="top" title="Go Oneweek Three">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://l453595892.github.io/2018/12/kuberentes-1.11%E5%BC%80%E5%90%AFipvs-%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="Kuberentes 1.11(开启ipvs) 二进制安装过程">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://l453595892.github.io">CraftLi的博客</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.45-DEV</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://l453595892.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+
