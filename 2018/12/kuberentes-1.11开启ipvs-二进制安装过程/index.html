@@ -129,7 +129,7 @@
 
 
   
-    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/kubnernetes-install-binary.jpg" data-img-desc-1="加拿大马蹄海湾"></div>
+    <div id="header-big-imgs" data-num-img=1 data-img-src-1="https://l453595892.github.io/img/kubernetes-install-binary.jpg" data-img-desc-1="加拿大马蹄海湾"></div>
   
 
   <header class="header-section has-img">
@@ -652,415 +652,431 @@ kubectl version
 <h2 id="生成kubeconfig">生成kubeconfig</h2>
 
 <ul>
-<li>使用 TLS Bootstrapping
-```
-export BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d &lsquo; &lsquo;)</li>
+<li>使用 TLS Bootstrapping</li>
 </ul>
 
-<p>cat &gt; /etc/kubernetes/token.csv &lt;&lt; EOF
-${BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,&ldquo;system:kubelet-bootstrap&rdquo;
-EOF</p>
+<pre><code>export BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
 
-<pre><code>
-* 创建 kubelet bootstrapping kubeconfig
+cat &gt; /etc/kubernetes/token.csv &lt;&lt; EOF
+${BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,&quot;system:kubelet-bootstrap&quot;
+EOF
 </code></pre>
 
-<p>cd /etc/kubernetes</p>
+<ul>
+<li>创建 kubelet bootstrapping kubeconfig</li>
+</ul>
 
-<p>export KUBE_APISERVER=&ldquo;<a href="https://192.168.1.1:6443&quot;">https://192.168.1.1:6443&quot;</a></p>
+<pre><code>cd /etc/kubernetes
 
-<p>kubectl config set-cluster kubernetes <br />
-&ndash;certificate-authority=/etc/kubernetes/pki/ca.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;server=${KUBE_APISERVER} <br />
-&ndash;kubeconfig=kubelet-bootstrap.conf</p>
+export KUBE_APISERVER=&quot;https://192.168.1.1:6443&quot;
 
-<p>kubectl config set-credentials kubelet-bootstrap <br />
-&ndash;token=${BOOTSTRAP_TOKEN} <br />
-&ndash;kubeconfig=kubelet-bootstrap.conf</p>
+kubectl config set-cluster kubernetes \
+--certificate-authority=/etc/kubernetes/pki/ca.pem \
+--embed-certs=true \
+--server=${KUBE_APISERVER} \
+--kubeconfig=kubelet-bootstrap.conf
 
-<p>kubectl config set-context default <br />
-&ndash;cluster=kubernetes <br />
-&ndash;user=kubelet-bootstrap <br />
-&ndash;kubeconfig=kubelet-bootstrap.conf</p>
+kubectl config set-credentials kubelet-bootstrap \
+--token=${BOOTSTRAP_TOKEN} \
+--kubeconfig=kubelet-bootstrap.conf
 
-<p>kubectl config use-context default &ndash;kubeconfig=kubelet-bootstrap.conf</p>
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=kubelet-bootstrap \
+--kubeconfig=kubelet-bootstrap.conf
 
-<pre><code>
-* 创建 kube-controller-manager kubeconfig
+kubectl config use-context default --kubeconfig=kubelet-bootstrap.conf
 </code></pre>
 
-<p>export KUBE_APISERVER=&ldquo;<a href="https://192.168.1.1:6443&quot;">https://192.168.1.1:6443&quot;</a></p>
+<ul>
+<li>创建 kube-controller-manager kubeconfig</li>
+</ul>
 
-<p>kubectl config set-cluster kubernetes <br />
-&ndash;certificate-authority=/etc/kubernetes/pki/ca.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;server=${KUBE_APISERVER} <br />
-&ndash;kubeconfig=kube-controller-manager.conf</p>
+<pre><code>export KUBE_APISERVER=&quot;https://192.168.1.1:6443&quot;
 
-<p>kubectl config set-credentials kube-controller-manager <br />
-&ndash;client-certificate=/etc/kubernetes/pki/kube-controller-manager.pem <br />
-&ndash;client-key=/etc/kubernetes/pki/kube-controller-manager-key.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;kubeconfig=kube-controller-manager.conf</p>
+kubectl config set-cluster kubernetes \
+--certificate-authority=/etc/kubernetes/pki/ca.pem \
+--embed-certs=true \
+--server=${KUBE_APISERVER} \
+--kubeconfig=kube-controller-manager.conf
 
-<p>kubectl config set-context default <br />
-&ndash;cluster=kubernetes <br />
-&ndash;user=kube-controller-manager <br />
-&ndash;kubeconfig=kube-controller-manager.conf</p>
+kubectl config set-credentials kube-controller-manager \
+--client-certificate=/etc/kubernetes/pki/kube-controller-manager.pem \
+--client-key=/etc/kubernetes/pki/kube-controller-manager-key.pem \
+--embed-certs=true \
+--kubeconfig=kube-controller-manager.conf
 
-<p>kubectl config use-context default &ndash;kubeconfig=kube-controller-manager.conf</p>
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=kube-controller-manager \
+--kubeconfig=kube-controller-manager.conf
 
-<pre><code>
-* 创建 kube-scheduler kubeconfig
+kubectl config use-context default --kubeconfig=kube-controller-manager.conf
 </code></pre>
 
-<p>export KUBE_APISERVER=&ldquo;<a href="https://192.168.1.1:6443&quot;">https://192.168.1.1:6443&quot;</a></p>
+<ul>
+<li>创建 kube-scheduler kubeconfig</li>
+</ul>
 
-<p>kubectl config set-cluster kubernetes <br />
- &ndash;certificate-authority=/etc/kubernetes/pki/ca.pem <br />
- &ndash;embed-certs=true <br />
- &ndash;server=${KUBE_APISERVER} <br />
- &ndash;kubeconfig=kube-scheduler.conf</p>
+<pre><code>export KUBE_APISERVER=&quot;https://192.168.1.1:6443&quot;
 
-<p>kubectl config set-credentials kube-scheduler <br />
-&ndash;client-certificate=/etc/kubernetes/pki/kube-scheduler.pem <br />
-&ndash;client-key=/etc/kubernetes/pki/kube-scheduler-key.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;kubeconfig=kube-scheduler.conf</p>
+kubectl config set-cluster kubernetes \
+ --certificate-authority=/etc/kubernetes/pki/ca.pem \
+ --embed-certs=true \
+ --server=${KUBE_APISERVER} \
+ --kubeconfig=kube-scheduler.conf
 
-<p>kubectl config set-context default <br />
-&ndash;cluster=kubernetes <br />
-&ndash;user=kube-scheduler <br />
-&ndash;kubeconfig=kube-scheduler.conf</p>
+kubectl config set-credentials kube-scheduler \
+--client-certificate=/etc/kubernetes/pki/kube-scheduler.pem \
+--client-key=/etc/kubernetes/pki/kube-scheduler-key.pem \
+--embed-certs=true \
+--kubeconfig=kube-scheduler.conf
 
-<p>kubectl config use-context default &ndash;kubeconfig=kube-scheduler.conf</p>
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=kube-scheduler \
+--kubeconfig=kube-scheduler.conf
 
-<pre><code>
-* 创建 kube-proxy kubeconfig
+kubectl config use-context default --kubeconfig=kube-scheduler.conf
 </code></pre>
 
-<p>export KUBE_APISERVER=&ldquo;<a href="https://192.168.1.1:6443&quot;">https://192.168.1.1:6443&quot;</a>
-kubectl config set-cluster kubernetes <br />
-&ndash;certificate-authority=/etc/kubernetes/pki/ca.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;server=${KUBE_APISERVER} <br />
-&ndash;kubeconfig=kube-proxy.conf</p>
+<ul>
+<li>创建 kube-proxy kubeconfig</li>
+</ul>
 
-<p>kubectl config set-credentials kube-proxy <br />
-&ndash;client-certificate=/etc/kubernetes/pki/kube-proxy.pem <br />
-&ndash;client-key=/etc/kubernetes/pki/kube-proxy-key.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;kubeconfig=kube-proxy.conf</p>
+<pre><code>export KUBE_APISERVER=&quot;https://192.168.1.1:6443&quot;
+kubectl config set-cluster kubernetes \
+--certificate-authority=/etc/kubernetes/pki/ca.pem \
+--embed-certs=true \
+--server=${KUBE_APISERVER} \
+--kubeconfig=kube-proxy.conf
 
-<p>kubectl config set-context default <br />
-&ndash;cluster=kubernetes <br />
-&ndash;user=kube-proxy <br />
-&ndash;kubeconfig=kube-proxy.conf</p>
+kubectl config set-credentials kube-proxy \
+--client-certificate=/etc/kubernetes/pki/kube-proxy.pem \
+--client-key=/etc/kubernetes/pki/kube-proxy-key.pem \
+--embed-certs=true \
+--kubeconfig=kube-proxy.conf
 
-<p>kubectl config use-context default &ndash;kubeconfig=kube-proxy.conf</p>
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=kube-proxy \
+--kubeconfig=kube-proxy.conf
 
-<pre><code>
-* 创建 admin kubeconfig
+kubectl config use-context default --kubeconfig=kube-proxy.conf
 </code></pre>
 
-<p>export KUBE_APISERVER=&ldquo;<a href="https://192.168.1.1:6443&quot;">https://192.168.1.1:6443&quot;</a></p>
+<ul>
+<li>创建 admin kubeconfig</li>
+</ul>
 
-<p>kubectl config set-cluster kubernetes <br />
-&ndash;certificate-authority=/etc/kubernetes/pki/ca.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;server=${KUBE_APISERVER} <br />
-&ndash;kubeconfig=admin.conf</p>
+<pre><code>export KUBE_APISERVER=&quot;https://192.168.1.1:6443&quot;
 
-<p>kubectl config set-credentials admin <br />
-&ndash;client-certificate=/etc/kubernetes/pki/admin.pem <br />
-&ndash;client-key=/etc/kubernetes/pki/admin-key.pem <br />
-&ndash;embed-certs=true <br />
-&ndash;kubeconfig=admin.conf</p>
+kubectl config set-cluster kubernetes \
+--certificate-authority=/etc/kubernetes/pki/ca.pem \
+--embed-certs=true \
+--server=${KUBE_APISERVER} \
+--kubeconfig=admin.conf
 
-<p>kubectl config set-context default <br />
-&ndash;cluster=kubernetes <br />
-&ndash;user=admin <br />
-&ndash;kubeconfig=admin.conf</p>
+kubectl config set-credentials admin \
+--client-certificate=/etc/kubernetes/pki/admin.pem \
+--client-key=/etc/kubernetes/pki/admin-key.pem \
+--embed-certs=true \
+--kubeconfig=admin.conf
 
-<p>kubectl config use-context default &ndash;kubeconfig=admin.conf</p>
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=admin \
+--kubeconfig=admin.conf
 
-<pre><code>
-* 把 kube-proxy.conf 复制到其他节点
+kubectl config use-context default --kubeconfig=admin.conf
 </code></pre>
 
-<p>scp kubelet-bootstrap.conf kube-proxy.conf 192.168.1.2:/etc/kubernetes
+<ul>
+<li>把 kube-proxy.conf 复制到其他节点</li>
+</ul>
+
+<pre><code>scp kubelet-bootstrap.conf kube-proxy.conf 192.168.1.2:/etc/kubernetes
 scp kubelet-bootstrap.conf kube-proxy.conf 192.168.1.3:/etc/kubernetes
-cd $HOME</p>
-
-<pre><code>
-## 配置启动kube-apiserver
-
-* 复制 etcd ca
+cd $HOME
 </code></pre>
 
-<p>mkdir -pv /etc/kubernetes/pki/etcd
+<h2 id="配置启动kube-apiserver">配置启动kube-apiserver</h2>
+
+<ul>
+<li>复制 etcd ca</li>
+</ul>
+
+<pre><code>mkdir -pv /etc/kubernetes/pki/etcd
 cd /etc/etcd/ssl
-cp etcd-ca.pem etcd-key.pem etcd.pem /etc/kubernetes/pki/etcd</p>
-
-<pre><code>
-* 生成 service account key
+cp etcd-ca.pem etcd-key.pem etcd.pem /etc/kubernetes/pki/etcd
 </code></pre>
 
-<p>openssl genrsa -out /etc/kubernetes/pki/sa.key 2048
+<ul>
+<li>生成 service account key</li>
+</ul>
+
+<pre><code>openssl genrsa -out /etc/kubernetes/pki/sa.key 2048
 openssl rsa -in /etc/kubernetes/pki/sa.key -pubout -out /etc/kubernetes/pki/sa.pub
 ls /etc/kubernetes/pki/sa.*
-cd $HOME</p>
-
-<pre><code>
-* 启动文件
+cd $HOME
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kube-apiserver.service &lt;&lt; EOF
+<ul>
+<li>启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kube-apiserver.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes API Service
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
-After=network.target</p>
+Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/apiserver
-ExecStart=/usr/local/kubernetes/server/bin/kube-apiserver <br />
-      \$KUBE_LOGTOSTDERR <br />
-      \$KUBE_LOG_LEVEL <br />
-      \$KUBE_ETCD_ARGS <br />
-      \$KUBE_API_ADDRESS <br />
-      \$KUBE_SERVICE_ADDRESSES <br />
-      \$KUBE_ADMISSION_CONTROL <br />
+ExecStart=/usr/local/kubernetes/server/bin/kube-apiserver \\
+      \$KUBE_LOGTOSTDERR \\
+      \$KUBE_LOG_LEVEL \\
+      \$KUBE_ETCD_ARGS \\
+      \$KUBE_API_ADDRESS \\
+      \$KUBE_SERVICE_ADDRESSES \\
+      \$KUBE_ADMISSION_CONTROL \\
       \$KUBE_APISERVER_ARGS
 Restart=on-failure
 Type=notify
-LimitNOFILE=65536</p>
+LimitNOFILE=65536
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
-
-<pre><code>
-* 该配置文件同时被 kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, kube-proxy 使用
+EOF
 </code></pre>
 
-<p>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
-KUBE_LOGTOSTDERR=&ldquo;&ndash;logtostderr=true&rdquo;
-KUBE_LOG_LEVEL=&ldquo;&ndash;v=2&rdquo;
-EOF</p>
+<ul>
+<li>该配置文件同时被 kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, kube-proxy 使用</li>
+</ul>
 
-<p>cat &gt; /etc/kubernetes/apiserver &lt;&lt; EOF
-KUBE_API_ADDRESS=&ldquo;&ndash;advertise-address=192.168.1.1&rdquo;
-KUBE_ETCD_ARGS=&ldquo;&ndash;etcd-servers=<a href="https://192.168.1.4:2379,https://192.168.1.5:2379,https://192.168.1.6:2379">https://192.168.1.4:2379,https://192.168.1.5:2379,https://192.168.1.6:2379</a> &ndash;etcd-cafile=/etc/kubernetes/pki/etcd/etcd-ca.pem &ndash;etcd-certfile=/etc/kubernetes/pki/etcd/etcd.pem &ndash;etcd-keyfile=/etc/kubernetes/pki/etcd/etcd-key.pem&rdquo;
-KUBE_SERVICE_ADDRESSES=&ldquo;&ndash;service-cluster-ip-range=10.96.0.0/12&rdquo;
-KUBE_ADMISSION_CONTROL=&ldquo;&ndash;enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota&rdquo;
-KUBE_APISERVER_ARGS=&ldquo;&ndash;allow-privileged=true &ndash;authorization-mode=Node,RBAC &ndash;enable-bootstrap-token-auth=true &ndash;token-auth-file=/etc/kubernetes/token.csv &ndash;service-node-port-range=30000-32767 &ndash;tls-cert-file=/etc/kubernetes/pki/kube-apiserver.pem &ndash;tls-private-key-file=/etc/kubernetes/pki/kube-apiserver-key.pem &ndash;client-ca-file=/etc/kubernetes/pki/ca.pem &ndash;service-account-key-file=/etc/kubernetes/pki/sa.pub &ndash;enable-swagger-ui=true &ndash;secure-port=6443 &ndash;kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname &ndash;anonymous-auth=false &ndash;kubelet-client-certificate=/etc/kubernetes/pki/admin.pem &ndash;kubelet-client-key=/etc/kubernetes/pki/admin-key.pem&rdquo;
-EOF</p>
+<pre><code>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=2&quot;
+EOF
 
-<pre><code>
-* 启动
+cat &gt; /etc/kubernetes/apiserver &lt;&lt; EOF
+KUBE_API_ADDRESS=&quot;--advertise-address=192.168.1.1&quot;
+KUBE_ETCD_ARGS=&quot;--etcd-servers=https://192.168.1.4:2379,https://192.168.1.5:2379,https://192.168.1.6:2379 --etcd-cafile=/etc/kubernetes/pki/etcd/etcd-ca.pem --etcd-certfile=/etc/kubernetes/pki/etcd/etcd.pem --etcd-keyfile=/etc/kubernetes/pki/etcd/etcd-key.pem&quot;
+KUBE_SERVICE_ADDRESSES=&quot;--service-cluster-ip-range=10.96.0.0/12&quot;
+KUBE_ADMISSION_CONTROL=&quot;--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota&quot;
+KUBE_APISERVER_ARGS=&quot;--allow-privileged=true --authorization-mode=Node,RBAC --enable-bootstrap-token-auth=true --token-auth-file=/etc/kubernetes/token.csv --service-node-port-range=30000-32767 --tls-cert-file=/etc/kubernetes/pki/kube-apiserver.pem --tls-private-key-file=/etc/kubernetes/pki/kube-apiserver-key.pem --client-ca-file=/etc/kubernetes/pki/ca.pem --service-account-key-file=/etc/kubernetes/pki/sa.pub --enable-swagger-ui=true --secure-port=6443 --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --anonymous-auth=false --kubelet-client-certificate=/etc/kubernetes/pki/admin.pem --kubelet-client-key=/etc/kubernetes/pki/admin-key.pem&quot;
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kube-apiserver
 systemctl start kube-apiserver
-systemctl status kube-apiserver</p>
-
-<pre><code>
-* 访问测试
+systemctl status kube-apiserver
 </code></pre>
 
-<p>curl -k <a href="https://192.168.1.1:6443/">https://192.168.1.1:6443/</a></p>
+<ul>
+<li>访问测试</li>
+</ul>
 
-<p>出现一下内容说明搭建成功：
+<pre><code>curl -k https://192.168.1.1:6443/
+
+出现一下内容说明搭建成功：
 {
-&ldquo;kind&rdquo;: &ldquo;Status&rdquo;,
-&ldquo;apiVersion&rdquo;: &ldquo;v1&rdquo;,
-&ldquo;metadata&rdquo;: {</p>
+&quot;kind&quot;: &quot;Status&quot;,
+&quot;apiVersion&quot;: &quot;v1&quot;,
+&quot;metadata&quot;: {
 
-<p>},
-&ldquo;status&rdquo;: &ldquo;Failure&rdquo;,
-&ldquo;message&rdquo;: &ldquo;Unauthorized&rdquo;,
-&ldquo;reason&rdquo;: &ldquo;Unauthorized&rdquo;,
-&ldquo;code&rdquo;: 401
-}</p>
-
-<pre><code>
-## 配置启动kube-controller-manager
-
-* 启动文件
+},
+&quot;status&quot;: &quot;Failure&quot;,
+&quot;message&quot;: &quot;Unauthorized&quot;,
+&quot;reason&quot;: &quot;Unauthorized&quot;,
+&quot;code&quot;: 401
+}
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kube-controller-manager.service &lt;&lt; EOF
-Description=Kubernetes Controller Manager
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a></p>
+<h2 id="配置启动kube-controller-manager">配置启动kube-controller-manager</h2>
 
-<p>[Service]
+<ul>
+<li>启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kube-controller-manager.service &lt;&lt; EOF
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/kubernetes/kubernetes
+
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/controller-manager
-ExecStart=/usr/local/kubernetes/server/bin/kube-controller-manager <br />
-      \$KUBE_LOGTOSTDERR <br />
-      \$KUBE_LOG_LEVEL <br />
-      \$KUBECONFIG <br />
+ExecStart=/usr/local/kubernetes/server/bin/kube-controller-manager \\
+      \$KUBE_LOGTOSTDERR \\
+      \$KUBE_LOG_LEVEL \\
+      \$KUBECONFIG \\
       \$KUBE_CONTROLLER_MANAGER_ARGS
 Restart=on-failure
-LimitNOFILE=65536</p>
+LimitNOFILE=65536
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
-
-<pre><code>
-* 配置文件
+EOF
 </code></pre>
 
-<p>cat &gt;/etc/kubernetes/controller-manager&lt;&lt;EOF
-KUBECONFIG=&ldquo;&ndash;kubeconfig=/etc/kubernetes/kube-controller-manager.conf&rdquo;
-KUBE_CONTROLLER_MANAGER_ARGS=&ldquo;&ndash;address=127.0.0.1 &ndash;cluster-cidr=10.0.0.0/8 &ndash;cluster-name=kubernetes &ndash;cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem &ndash;cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem &ndash;service-account-private-key-file=/etc/kubernetes/pki/sa.key &ndash;root-ca-file=/etc/kubernetes/pki/ca.pem &ndash;leader-elect=true &ndash;use-service-account-credentials=true &ndash;node-monitor-grace-period=10s &ndash;pod-eviction-timeout=10s &ndash;allocate-node-cidrs=true &ndash;controllers=*,bootstrapsigner,tokencleaner&rdquo;
-EOF</p>
+<ul>
+<li>配置文件</li>
+</ul>
 
-<pre><code>
-* 启动
+<pre><code>cat &gt;/etc/kubernetes/controller-manager&lt;&lt;EOF
+KUBECONFIG=&quot;--kubeconfig=/etc/kubernetes/kube-controller-manager.conf&quot;
+KUBE_CONTROLLER_MANAGER_ARGS=&quot;--address=127.0.0.1 --cluster-cidr=10.0.0.0/8 --cluster-name=kubernetes --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem --service-account-private-key-file=/etc/kubernetes/pki/sa.key --root-ca-file=/etc/kubernetes/pki/ca.pem --leader-elect=true --use-service-account-credentials=true --node-monitor-grace-period=10s --pod-eviction-timeout=10s --allocate-node-cidrs=true --controllers=*,bootstrapsigner,tokencleaner&quot;
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kube-controller-manager
 systemctl start kube-controller-manager
-systemctl status kube-controller-manager</p>
-
-<pre><code>
-## 配置启动kube-scheduler
-
-* systemctl启动文件
+systemctl status kube-controller-manager
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kube-scheduler.service &lt;&lt; EOF
+<h2 id="配置启动kube-scheduler">配置启动kube-scheduler</h2>
+
+<ul>
+<li>systemctl启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kube-scheduler.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Scheduler Plugin
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a></p>
+Documentation=https://github.com/kubernetes/kubernetes
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/scheduler
-ExecStart=/usr/local/kubernetes/server/bin/kube-scheduler <br />
-          \$KUBE_LOGTOSTDERR <br />
-          \$KUBE_LOG_LEVEL <br />
-          \$KUBECONFIG <br />
+ExecStart=/usr/local/kubernetes/server/bin/kube-scheduler \\
+          \$KUBE_LOGTOSTDERR \\
+          \$KUBE_LOG_LEVEL \\
+          \$KUBECONFIG \\
           \$KUBE_SCHEDULER_ARGS
 Restart=on-failure
-LimitNOFILE=65536</p>
+LimitNOFILE=65536
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
-
-<pre><code>
-* 配置文件
+EOF
 </code></pre>
 
-<p>cat &gt; /etc/kubernetes/scheduler &lt;&lt; EOF
-KUBECONFIG=&ldquo;&ndash;kubeconfig=/etc/kubernetes/kube-scheduler.conf&rdquo;
-KUBE_SCHEDULER_ARGS=&ldquo;&ndash;leader-elect=true &ndash;address=127.0.0.1&rdquo;
-EOF</p>
+<ul>
+<li>配置文件</li>
+</ul>
 
-<pre><code>
-* 启动
+<pre><code>cat &gt; /etc/kubernetes/scheduler &lt;&lt; EOF
+KUBECONFIG=&quot;--kubeconfig=/etc/kubernetes/kube-scheduler.conf&quot;
+KUBE_SCHEDULER_ARGS=&quot;--leader-elect=true --address=127.0.0.1&quot;
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kube-scheduler
 systemctl start kube-scheduler
-systemctl status kube-scheduler</p>
-
-<pre><code>
-## 配置kubectl
-
+systemctl status kube-scheduler
 </code></pre>
 
-<p>rm -rf $HOME/.kube
+<h2 id="配置kubectl">配置kubectl</h2>
+
+<pre><code>rm -rf $HOME/.kube
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-kubectl get node</p>
-
-<pre><code>
-## 查看各个组件的状态
-
+kubectl get node
 </code></pre>
 
-<p>kubectl get componentstatuses</p>
+<h2 id="查看各个组件的状态">查看各个组件的状态</h2>
 
-<p>[root@master ~]# kubectl get componentstatuses
+<pre><code>kubectl get componentstatuses   
+
+[root@master ~]# kubectl get componentstatuses
 NAME                 STATUS    MESSAGE              ERROR
 controller-manager   Healthy   ok
 scheduler            Healthy   ok
-etcd-1               Healthy   {&ldquo;health&rdquo;: &ldquo;true&rdquo;}
-etcd-0               Healthy   {&ldquo;health&rdquo;: &ldquo;true&rdquo;}
-etcd-2               Healthy   {&ldquo;health&rdquo;: &ldquo;true&rdquo;}</p>
-
-<pre><code>
-## 配置kubelet使用bootstrap
+etcd-1               Healthy   {&quot;health&quot;: &quot;true&quot;}
+etcd-0               Healthy   {&quot;health&quot;: &quot;true&quot;}
+etcd-2               Healthy   {&quot;health&quot;: &quot;true&quot;}
 </code></pre>
 
-<p>kubectl create clusterrolebinding kubelet-bootstrap <br />
-&ndash;clusterrole=system:node-bootstrapper <br />
-&ndash;user=kubelet-bootstrap</p>
+<h2 id="配置kubelet使用bootstrap">配置kubelet使用bootstrap</h2>
 
-<pre><code>
-# 配置cni和kubelet
-
-## master端操作
-* 下载cni包
+<pre><code>kubectl create clusterrolebinding kubelet-bootstrap \
+--clusterrole=system:node-bootstrapper \
+--user=kubelet-bootstrap
 </code></pre>
 
-<p>cd /root
-wget <a href="https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz">https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz</a>
+<h1 id="配置cni和kubelet">配置cni和kubelet</h1>
+
+<h2 id="master端操作">master端操作</h2>
+
+<ul>
+<li>下载cni包</li>
+</ul>
+
+<pre><code>cd /root
+wget https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz
 mkdir /opt/cni/bin -p
-tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin</p>
-
-<pre><code>
-* 配置启动kubelet
+tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin
 </code></pre>
 
-<p>#配置启动文件</p>
+<ul>
+<li>配置启动kubelet</li>
+</ul>
 
-<p>cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
+<pre><code>#配置启动文件
+
+cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kubelet Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
+Documentation=https://github.com/kubernetes/kubernetes
 After=docker.service
-Requires=docker.service</p>
+Requires=docker.service
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/kubelet
-ExecStart=/usr/local/kubernetes/server/bin/kubelet <br />
-          \$KUBE_LOGTOSTDERR <br />
-          \$KUBE_LOG_LEVEL <br />
-          \$KUBELET_CONFIG <br />
-          \$KUBELET_HOSTNAME <br />
-          \$KUBELET_POD_INFRA_CONTAINER <br />
+ExecStart=/usr/local/kubernetes/server/bin/kubelet \\
+          \$KUBE_LOGTOSTDERR \\
+          \$KUBE_LOG_LEVEL \\
+          \$KUBELET_CONFIG \\
+          \$KUBELET_HOSTNAME \\
+          \$KUBELET_POD_INFRA_CONTAINER \\
           \$KUBELET_ARGS
-Restart=on-failure</p>
+Restart=on-failure
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
-KUBE_LOGTOSTDERR=&ldquo;&ndash;logtostderr=true&rdquo;
-KUBE_LOG_LEVEL=&ldquo;&ndash;v=2&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/config &lt;&lt; EOF
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=2&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
-KUBELET_HOSTNAME=&ldquo;&ndash;hostname-override=192.168.1.1&rdquo;
-KUBELET_POD_INFRA_CONTAINER=&ldquo;&ndash;pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&rdquo;
-KUBELET_CONFIG=&ldquo;&ndash;config=/etc/kubernetes/kubelet-config.yml&rdquo;
-KUBELET_ARGS=&ldquo;&ndash;bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf &ndash;kubeconfig=/etc/kubernetes/kubelet.conf &ndash;cert-dir=/etc/kubernetes/pki &ndash;network-plugin=cni &ndash;cni-bin-dir=/opt/cni/bin &ndash;cni-conf-dir=/etc/cni/net.d&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
+KUBELET_HOSTNAME=&quot;--hostname-override=192.168.1.1&quot;
+KUBELET_POD_INFRA_CONTAINER=&quot;--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&quot;
+KUBELET_CONFIG=&quot;--config=/etc/kubernetes/kubelet-config.yml&quot;
+KUBELET_ARGS=&quot;--bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cert-dir=/etc/kubernetes/pki --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-conf-dir=/etc/cni/net.d&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
+cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: 192.168.1.1
@@ -1078,73 +1094,77 @@ authentication:
     enbaled: false
  webhook:
     enbaled: false
-EOF</p>
-
-<pre><code>
-* 启动kubelet
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动kubelet</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kubelet
 systemctl restart kubelet
-systemctl status kubelet</p>
-
-<pre><code>
-## 在node1上操作
-* 下载cni包
+systemctl status kubelet
 </code></pre>
 
-<p>cd /root
-wget <a href="https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz">https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz</a>
-wget <a href="https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz">https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz</a></p>
+<h2 id="在node1上操作">在node1上操作</h2>
 
-<p>tar -xf kubernetes-node-linux-amd64.tar.gz -C /usr/local/
+<ul>
+<li>下载cni包</li>
+</ul>
+
+<pre><code>cd /root
+wget https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz
+wget https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz
+
+tar -xf kubernetes-node-linux-amd64.tar.gz -C /usr/local/
 mv /usr/local/kubernetes /usr/local/kubernetes-v1.11
 ln -s kubernetes-v1.11 /usr/local/kubernetes
 mkdir /opt/cni/bin -p
-tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin</p>
-
-<pre><code>
-* 配置启动kubelet
+tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin
 </code></pre>
 
-<p>#配置systemctl启动文件
+<ul>
+<li>配置启动kubelet</li>
+</ul>
+
+<pre><code>#配置systemctl启动文件
 cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kubelet Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
+Documentation=https://github.com/kubernetes/kubernetes
 After=docker.service
-Requires=docker.service</p>
+Requires=docker.service
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/kubelet
-ExecStart=/usr/local/kubernetes/node/bin/kubelet <br />
-          \$KUBE_LOGTOSTDERR <br />
-          \$KUBE_LOG_LEVEL <br />
-          \$KUBELET_CONFIG <br />
-          \$KUBELET_HOSTNAME <br />
-          \$KUBELET_POD_INFRA_CONTAINER <br />
+ExecStart=/usr/local/kubernetes/node/bin/kubelet \\
+          \$KUBE_LOGTOSTDERR \\
+          \$KUBE_LOG_LEVEL \\
+          \$KUBELET_CONFIG \\
+          \$KUBELET_HOSTNAME \\
+          \$KUBELET_POD_INFRA_CONTAINER \\
           \$KUBELET_ARGS
-Restart=on-failure</p>
+Restart=on-failure
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
-KUBE_LOGTOSTDERR=&ldquo;&ndash;logtostderr=true&rdquo;
-KUBE_LOG_LEVEL=&ldquo;&ndash;v=2&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/config &lt;&lt; EOF
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=2&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
-KUBELET_HOSTNAME=&ldquo;&ndash;hostname-override=192.168.1.2&rdquo;
-KUBELET_POD_INFRA_CONTAINER=&ldquo;&ndash;pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&rdquo;
-KUBELET_CONFIG=&ldquo;&ndash;config=/etc/kubernetes/kubelet-config.yml&rdquo;
-KUBELET_ARGS=&ldquo;&ndash;bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf &ndash;kubeconfig=/etc/kubernetes/kubelet.conf &ndash;cert-dir=/etc/kubernetes/pki &ndash;network-plugin=cni &ndash;cni-bin-dir=/opt/cni/bin &ndash;cni-conf-dir=/etc/cni/net.d&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
+KUBELET_HOSTNAME=&quot;--hostname-override=192.168.1.2&quot;
+KUBELET_POD_INFRA_CONTAINER=&quot;--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&quot;
+KUBELET_CONFIG=&quot;--config=/etc/kubernetes/kubelet-config.yml&quot;
+KUBELET_ARGS=&quot;--bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cert-dir=/etc/kubernetes/pki --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-conf-dir=/etc/cni/net.d&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
+cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: 192.168.1.2
@@ -1162,74 +1182,78 @@ authentication:
       enbaled: false
   webhook:
       enbaled: false
-EOF</p>
-
-<pre><code>
-* 启动kubelet
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动kubelet</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kubelet
 systemctl restart kubelet
-systemctl status kubelet</p>
-
-<pre><code>
-## 在node2上操作
-* 下载cni包
+systemctl status kubelet  
 </code></pre>
 
-<p>cd /root
-wget <a href="https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz">https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz</a>
-wget <a href="https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz">https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz</a></p>
+<h2 id="在node2上操作">在node2上操作</h2>
 
-<p>tar -xf kubernetes-node-linux-amd64.tar.gz -C /usr/local/
+<ul>
+<li>下载cni包</li>
+</ul>
+
+<pre><code>cd /root
+wget https://dl.k8s.io/v1.11.1/kubernetes-node-linux-amd64.tar.gz
+wget https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz
+
+tar -xf kubernetes-node-linux-amd64.tar.gz -C /usr/local/
 mv /usr/local/kubernetes /usr/local/kubernetes-v1.11
 ln -s kubernetes-v1.11 /usr/local/kubernetes
 mkdir /opt/cni/bin -p
-tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin</p>
-
-<pre><code>
-* 配置启动kubelet
+tar -xf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin
 </code></pre>
 
-<p>#配置systemctl启动文件</p>
+<ul>
+<li>配置启动kubelet</li>
+</ul>
 
-<p>cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
+<pre><code>#配置systemctl启动文件
+
+cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kubelet Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
+Documentation=https://github.com/kubernetes/kubernetes
 After=docker.service
-Requires=docker.service</p>
+Requires=docker.service
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/kubelet
-ExecStart=/usr/local/kubernetes/node/bin/kubelet <br />
-          \$KUBE_LOGTOSTDERR <br />
-          \$KUBE_LOG_LEVEL <br />
-          \$KUBELET_CONFIG <br />
-          \$KUBELET_HOSTNAME <br />
-          \$KUBELET_POD_INFRA_CONTAINER <br />
+ExecStart=/usr/local/kubernetes/node/bin/kubelet \\
+          \$KUBE_LOGTOSTDERR \\
+          \$KUBE_LOG_LEVEL \\
+          \$KUBELET_CONFIG \\
+          \$KUBELET_HOSTNAME \\
+          \$KUBELET_POD_INFRA_CONTAINER \\
           \$KUBELET_ARGS
-Restart=on-failure</p>
+Restart=on-failure
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
-KUBE_LOGTOSTDERR=&ldquo;&ndash;logtostderr=true&rdquo;
-KUBE_LOG_LEVEL=&ldquo;&ndash;v=2&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/config &lt;&lt; EOF
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=2&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
-KUBELET_HOSTNAME=&ldquo;&ndash;hostname-override=192.168.1.3&rdquo;
-KUBELET_POD_INFRA_CONTAINER=&ldquo;&ndash;pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&rdquo;
-KUBELET_CONFIG=&ldquo;&ndash;config=/etc/kubernetes/kubelet-config.yml&rdquo;
-KUBELET_ARGS=&ldquo;&ndash;bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf &ndash;kubeconfig=/etc/kubernetes/kubelet.conf &ndash;cert-dir=/etc/kubernetes/pki &ndash;network-plugin=cni &ndash;cni-bin-dir=/opt/cni/bin &ndash;cni-conf-dir=/etc/cni/net.d&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
+KUBELET_HOSTNAME=&quot;--hostname-override=192.168.1.3&quot;
+KUBELET_POD_INFRA_CONTAINER=&quot;--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&quot;
+KUBELET_CONFIG=&quot;--config=/etc/kubernetes/kubelet-config.yml&quot;
+KUBELET_ARGS=&quot;--bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cert-dir=/etc/kubernetes/pki --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-conf-dir=/etc/cni/net.d&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
+cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: 192.168.1.3
@@ -1247,47 +1271,49 @@ authentication:
      enbaled: false
  webhook:
      nbaled: false
-EOF</p>
-
-<pre><code>* #配置systemctl启动文件
+EOF
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
+<ul>
+<li>#配置systemctl启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kubelet.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kubelet Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
+Documentation=https://github.com/kubernetes/kubernetes
 After=docker.service
-Requires=docker.service</p>
+Requires=docker.service
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/kubelet
-ExecStart=/usr/local/kubernetes/node/bin/kubelet <br />
-          \$KUBE_LOGTOSTDERR <br />
-          \$KUBE_LOG_LEVEL <br />
-          \$KUBELET_CONFIG <br />
-          \$KUBELET_HOSTNAME <br />
-          \$KUBELET_POD_INFRA_CONTAINER <br />
+ExecStart=/usr/local/kubernetes/node/bin/kubelet \\
+          \$KUBE_LOGTOSTDERR \\
+          \$KUBE_LOG_LEVEL \\
+          \$KUBELET_CONFIG \\
+          \$KUBELET_HOSTNAME \\
+          \$KUBELET_POD_INFRA_CONTAINER \\
           \$KUBELET_ARGS
-Restart=on-failure</p>
+Restart=on-failure
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>cat &gt; /etc/kubernetes/config &lt;&lt; EOF
-KUBE_LOGTOSTDERR=&ldquo;&ndash;logtostderr=true&rdquo;
-KUBE_LOG_LEVEL=&ldquo;&ndash;v=2&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/config &lt;&lt; EOF
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=2&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
-KUBELET_HOSTNAME=&ldquo;&ndash;hostname-override=192.168.1.3&rdquo;
-KUBELET_POD_INFRA_CONTAINER=&ldquo;&ndash;pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&rdquo;
-KUBELET_CONFIG=&ldquo;&ndash;config=/etc/kubernetes/kubelet-config.yml&rdquo;
-KUBELET_ARGS=&ldquo;&ndash;bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf &ndash;kubeconfig=/etc/kubernetes/kubelet.conf &ndash;cert-dir=/etc/kubernetes/pki &ndash;network-plugin=cni &ndash;cni-bin-dir=/opt/cni/bin &ndash;cni-conf-dir=/etc/cni/net.d&rdquo;
-EOF</p>
+cat &gt; /etc/kubernetes/kubelet &lt;&lt; EOF
+KUBELET_HOSTNAME=&quot;--hostname-override=192.168.1.3&quot;
+KUBELET_POD_INFRA_CONTAINER=&quot;--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1&quot;
+KUBELET_CONFIG=&quot;--config=/etc/kubernetes/kubelet-config.yml&quot;
+KUBELET_ARGS=&quot;--bootstrap-kubeconfig=/etc/kubernetes/kubelet-bootstrap.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cert-dir=/etc/kubernetes/pki --network-plugin=cni --cni-bin-dir=/opt/cni/bin --cni-conf-dir=/etc/cni/net.d&quot;
+EOF
 
-<p>cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
+cat &gt; /etc/kubernetes/kubelet-config.yml &lt;&lt; EOF
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 address: 192.168.1.3
@@ -1305,258 +1331,281 @@ authentication:
      enbaled: false
  webhook:
      nbaled: false
-EOF</p>
-
-<pre><code>
-* 启动kubelet
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动kubelet</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kubelet
 systemctl restart kubelet
-systemctl status kubelet</p>
-
-<pre><code>
-## 通过证书验证添加各个节点
+systemctl status kubelet  
 </code></pre>
 
-<p>#在master节点操作</p>
+<h2 id="通过证书验证添加各个节点">通过证书验证添加各个节点</h2>
 
-<p>kubectl get csr</p>
+<pre><code>#在master节点操作
 
-<p>#通过验证并添加进集群</p>
+kubectl get csr
 
-<p>kubectl get csr | awk &lsquo;/node/{print $1}&rsquo; | xargs kubectl certificate approve</p>
+#通过验证并添加进集群
 
-<p>###单独执行命令例子：
-    kubectl certificate approve node-csr-Yiiv675wUCvQl3HH11jDr0cC9p3kbrXWrxvG3EjWGoE</p>
+kubectl get csr | awk '/node/{print $1}' | xargs kubectl certificate approve
 
-<p>#查看节点
-#此时节点状态为 NotReady，因为还没有配置网络</p>
+###单独执行命令例子：
+    kubectl certificate approve node-csr-Yiiv675wUCvQl3HH11jDr0cC9p3kbrXWrxvG3EjWGoE
 
-<p>kubectl get nodes</p>
+#查看节点
+#此时节点状态为 NotReady，因为还没有配置网络
 
-<p>[root@master ~]#kubectl get nodes<br />
+kubectl get nodes
+
+[root@master ~]#kubectl get nodes   
 NAME          STATUS     ROLES     AGE       VERSION
-192.168.1.1   NotReady   <none>    6s        v1.11.1
-192.168.1.2   NotReady   <none>    7s        v1.11.1
-192.168.1.3   NotReady   <none>    7s        v1.11.1</p>
+192.168.1.1   NotReady   &lt;none&gt;    6s        v1.11.1
+192.168.1.2   NotReady   &lt;none&gt;    7s        v1.11.1
+192.168.1.3   NotReady   &lt;none&gt;    7s        v1.11.1
 
-<h1 id="在node节点查看生成的文件">在node节点查看生成的文件</h1>
+# 在node节点查看生成的文件
 
-<p>ls -l /etc/kubernetes/kubelet.conf
-ls -l /etc/kubernetes/pki/kubelet*</p>
-
-<pre><code>
-# 配置kube-proxy
-**所有节点都要配置kube-proxy!!!**
-## 在master节点操作
-* 安装conntrack-tools
+ls -l /etc/kubernetes/kubelet.conf
+ls -l /etc/kubernetes/pki/kubelet*
 </code></pre>
 
-<p>yum install -y conntrack-tools</p>
+<h1 id="配置kube-proxy">配置kube-proxy</h1>
 
-<pre><code>* 启动文件
+<p><strong>所有节点都要配置kube-proxy!!!</strong></p>
+
+<h2 id="在master节点操作">在master节点操作</h2>
+
+<ul>
+<li>安装conntrack-tools</li>
+</ul>
+
+<pre><code>yum install -y conntrack-tools
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kube-proxy.service &lt;&lt; EOF
+<ul>
+<li>启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kube-proxy.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kube-Proxy Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
-After=network.target</p>
+Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/proxy
-ExecStart=/usr/local/kubernetes/server/bin/kube-proxy <br />
-      \$KUBE_LOGTOSTDERR <br />
-      \$KUBE_LOG_LEVEL <br />
-      \$KUBECONFIG <br />
+ExecStart=/usr/local/kubernetes/server/bin/kube-proxy \\
+      \$KUBE_LOGTOSTDERR \\
+      \$KUBE_LOG_LEVEL \\
+      \$KUBECONFIG \\
       \$KUBE_PROXY_ARGS
 Restart=on-failure
-LimitNOFILE=65536</p>
+LimitNOFILE=65536
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>#启用ipvs主要就是把kube-proxy的&ndash;proxy-mode配置选项修改为ipvs
-#并且要启用&ndash;masquerade-all，使用iptables辅助ipvs运行</p>
+#启用ipvs主要就是把kube-proxy的--proxy-mode配置选项修改为ipvs
+#并且要启用--masquerade-all，使用iptables辅助ipvs运行
 
-<p>cat &gt; /etc/kubernetes/proxy &lt;&lt; EOF
-KUBECONFIG=&ldquo;&ndash;kubeconfig=/etc/kubernetes/kube-proxy.conf&rdquo;
-KUBE_PROXY_ARGS=&ldquo;&ndash;proxy-mode=ipvs  &ndash;masquerade-all=true &ndash;cluster-cidr=10.0.0.0/8&rdquo;
-EOF</p>
-
-<pre><code>* 启动
+cat &gt; /etc/kubernetes/proxy &lt;&lt; EOF
+KUBECONFIG=&quot;--kubeconfig=/etc/kubernetes/kube-proxy.conf&quot;
+KUBE_PROXY_ARGS=&quot;--proxy-mode=ipvs  --masquerade-all=true --cluster-cidr=10.0.0.0/8&quot;
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kube-proxy
 systemctl restart kube-proxy
-systemctl status kube-proxy</p>
-
-<pre><code>
-## 在所有的node上操作
-* 安装
+systemctl status kube-proxy
 </code></pre>
 
-<p>yum install -y conntrack-tools</p>
+<h2 id="在所有的node上操作">在所有的node上操作</h2>
 
-<pre><code>* 启动文件
+<ul>
+<li>安装</li>
+</ul>
+
+<pre><code>yum install -y conntrack-tools
 </code></pre>
 
-<p>cat &gt; /etc/systemd/system/kube-proxy.service &lt;&lt; EOF
+<ul>
+<li>启动文件</li>
+</ul>
+
+<pre><code>cat &gt; /etc/systemd/system/kube-proxy.service &lt;&lt; EOF
 [Unit]
 Description=Kubernetes Kube-Proxy Server
-Documentation=<a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>
-After=network.target</p>
+Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
 
-<p>[Service]
+[Service]
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/proxy
-ExecStart=/usr/local/kubernetes/node/bin/kube-proxy <br />
-      \$KUBE_LOGTOSTDERR <br />
-      \$KUBE_LOG_LEVEL <br />
-      \$KUBECONFIG <br />
+ExecStart=/usr/local/kubernetes/node/bin/kube-proxy \\
+      \$KUBE_LOGTOSTDERR \\
+      \$KUBE_LOG_LEVEL \\
+      \$KUBECONFIG \\
       \$KUBE_PROXY_ARGS
 Restart=on-failure
-LimitNOFILE=65536</p>
+LimitNOFILE=65536
 
-<p>[Install]
+[Install]
 WantedBy=multi-user.target
-EOF</p>
+EOF
 
-<p>#启用ipvs主要就是把kube-proxy的&ndash;proxy-mode配置选项修改为ipvs
-#并且要启用&ndash;masquerade-all，使用iptables辅助ipvs运行</p>
+#启用ipvs主要就是把kube-proxy的--proxy-mode配置选项修改为ipvs
+#并且要启用--masquerade-all，使用iptables辅助ipvs运行
 
-<p>cat &gt; /etc/kubernetes/proxy &lt;&lt; EOF
-KUBECONFIG=&ldquo;&ndash;kubeconfig=/etc/kubernetes/kube-proxy.conf&rdquo;
-KUBE_PROXY_ARGS=&ldquo;&ndash;proxy-mode=ipvs &ndash;masquerade-all=true &ndash;cluster-cidr=10.0.0.0/8&rdquo;
-EOF</p>
-
-<pre><code>* 启动
+cat &gt; /etc/kubernetes/proxy &lt;&lt; EOF
+KUBECONFIG=&quot;--kubeconfig=/etc/kubernetes/kube-proxy.conf&quot;
+KUBE_PROXY_ARGS=&quot;--proxy-mode=ipvs --masquerade-all=true --cluster-cidr=10.0.0.0/8&quot;
+EOF
 </code></pre>
 
-<p>systemctl daemon-reload
+<ul>
+<li>启动</li>
+</ul>
+
+<pre><code>systemctl daemon-reload
 systemctl enable kube-proxy
 systemctl restart kube-proxy
-systemctl status kube-proxy</p>
-
-<pre><code>
-# 设置集群角色
-**在master节点操作**
-* 设置 192.168.1.1 为 master
+systemctl status kube-proxy
 </code></pre>
 
-<p>kubectl label nodes 192.168.1.1 node-role.kubernetes.io/master=</p>
+<h1 id="设置集群角色">设置集群角色</h1>
 
-<pre><code>* 设置 192.168.1.2 - 3 为 node
+<p><strong>在master节点操作</strong></p>
+
+<ul>
+<li>设置 192.168.1.1 为 master</li>
+</ul>
+
+<pre><code>kubectl label nodes 192.168.1.1 node-role.kubernetes.io/master=
 </code></pre>
 
-<p>kubectl label nodes 192.168.1.2 node-role.kubernetes.io/node=
-kubectl label nodes 192.168.1.3 node-role.kubernetes.io/node=</p>
+<ul>
+<li>设置 192.168.1.2 - 3 为 node</li>
+</ul>
 
-<pre><code>* 设置 master 一般情况下不接受负载
+<pre><code>kubectl label nodes 192.168.1.2 node-role.kubernetes.io/node=
+kubectl label nodes 192.168.1.3 node-role.kubernetes.io/node=
 </code></pre>
 
-<p>kubectl taint nodes 192.168.1.1 node-role.kubernetes.io/master=true:NoSchedule</p>
+<ul>
+<li>设置 master 一般情况下不接受负载</li>
+</ul>
 
-<pre><code>* 查看节点
+<pre><code>kubectl taint nodes 192.168.1.1 node-role.kubernetes.io/master=true:NoSchedule
 </code></pre>
 
-<p>#此时节点状态为 NotReady
-#ROLES已经标识出了master和node</p>
+<ul>
+<li>查看节点</li>
+</ul>
 
-<p>kubectl get node</p>
+<pre><code>#此时节点状态为 NotReady
+#ROLES已经标识出了master和node
 
-<p>NAME          STATUS     ROLES     AGE       VERSION
+kubectl get node
+
+NAME          STATUS     ROLES     AGE       VERSION
 192.168.1.1   NotReady   master    1m        v1.11.1
 192.168.1.2   NotReady   node      1m        v1.11.1
-192.168.1.3   NotReady   node      1m        v1.11.1</p>
-
-<pre><code># 配置网络
-
-## 使用flannel网络
+192.168.1.3   NotReady   node      1m        v1.11.1
 </code></pre>
 
-<p>cd /root/
+<h1 id="配置网络">配置网络</h1>
+
+<h2 id="使用flannel网络">使用flannel网络</h2>
+
+<pre><code>cd /root/
 mkdir flannel
 cd flannel
-wget <a href="https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml">https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml</a></p>
+wget https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
 
-<p>sed -ri &rsquo;s#(&ldquo;Network&rdquo;: &ldquo;)10.244.0.0/16#\110.0.0.0/8#&rsquo; kube-flannel.yml
-#修改kube-flannel文件中的网段为我们需要的网段</p>
+sed -ri 's#(&quot;Network&quot;: &quot;)10.244.0.0/16#\110.0.0.0/8#' kube-flannel.yml
+#修改kube-flannel文件中的网段为我们需要的网段
 
-<p>kubectl apply -f .</p>
-
-<pre><code>
-* 查看网络容器是否为running状态
+kubectl apply -f .
 </code></pre>
 
-<p>kubectl get -n kube-system pod -o wide</p>
+<ul>
+<li>查看网络容器是否为running状态</li>
+</ul>
 
-<p>[root@master ~]# kubectl get -n kube-system pod -o wide<br />
+<pre><code>kubectl get -n kube-system pod -o wide  
+
+[root@master ~]# kubectl get -n kube-system pod -o wide     
 NAME          READY     STATUS    RESTARTS   AGE       IP            NODE
-canal-74zhp   <sup>3</sup>&frasl;<sub>3</sub>       Running   0          7m        192.168.1.3   192.168.1.3
-canal-cmz2p   <sup>3</sup>&frasl;<sub>3</sub>       Running   0          7m        192.168.1.1   192.168.1.1
-canal-mkcg2   <sup>3</sup>&frasl;<sub>3</sub>       Running   0          7m        192.168.1.2   192.168.1.2</p>
-
-<pre><code>
-* 查看各个节点是否为Ready状态
+canal-74zhp   3/3       Running   0          7m        192.168.1.3   192.168.1.3
+canal-cmz2p   3/3       Running   0          7m        192.168.1.1   192.168.1.1
+canal-mkcg2   3/3       Running   0          7m        192.168.1.2   192.168.1.2
 </code></pre>
 
-<p>kubectl get node</p>
+<ul>
+<li>查看各个节点是否为Ready状态</li>
+</ul>
 
-<p>[root@master ~]#
+<pre><code>kubectl get node 
+
+[root@master ~]# 
 NAME          STATUS    ROLES     AGE       VERSION
 192.168.1.1   Ready     master    5h        v1.11.1
 192.168.1.2   Ready     node      5h        v1.11.1
-192.168.1.3   Ready     node      5h        v1.11.1</p>
-
-<pre><code>
-# 配置使用coredns
+192.168.1.3   Ready     node      5h        v1.11.1
 </code></pre>
 
-<p>#10.96.0.10 是kubelet中配置的dns
-#安装coredns</p>
+<h1 id="配置使用coredns">配置使用coredns</h1>
 
-<p>cd /root &amp;&amp; mkdir coredns &amp;&amp; cd coredns
-wget <a href="https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/coredns.yaml.sed">https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/coredns.yaml.sed</a>
-wget <a href="https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/deploy.sh">https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/deploy.sh</a>
+<pre><code>#10.96.0.10 是kubelet中配置的dns
+#安装coredns
+
+cd /root &amp;&amp; mkdir coredns &amp;&amp; cd coredns
+wget https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/coredns.yaml.sed
+wget https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/deploy.sh
 chmod +x deploy.sh
 ./deploy.sh -i 10.96.0.10 &gt; coredns.yml
-kubectl apply -f coredns.yml</p>
-
-<pre><code>
-# 查看
-
+kubectl apply -f coredns.yml
 </code></pre>
 
-<p>kubectl get svc,pods -n kube-system</p>
+<h1 id="查看">查看</h1>
 
-<p>[root@master coredns]# kubectl get svc,pods -n kube-system
+<pre><code>kubectl get svc,pods -n kube-system
+
+[root@master coredns]# kubectl get svc,pods -n kube-system
 NAME               TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
-service/kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP   2m</p>
+service/kube-dns   ClusterIP   10.96.0.10   &lt;none&gt;        53/UDP,53/TCP   2m
 
-<p>NAME                           READY     STATUS    RESTARTS   AGE
-pod/canal-5wkkd                <sup>3</sup>&frasl;<sub>3</sub>       Running   0          17h
-pod/canal-6mhhz                <sup>3</sup>&frasl;<sub>3</sub>       Running   0          17h
-pod/canal-k7ccs                <sup>3</sup>&frasl;<sub>3</sub>       Running   2          17h
-pod/coredns-6975654877-jpqg4   <sup>1</sup>&frasl;<sub>1</sub>       Running   0          2m
-pod/coredns-6975654877-lgz9n   <sup>1</sup>&frasl;<sub>1</sub>       Running   0          2m</p>
-
-<pre><code>
-# 测试
-
-* 创建一个nginx 应用，测试应用和dns是否正常
+NAME                           READY     STATUS    RESTARTS   AGE
+pod/canal-5wkkd                3/3       Running   0          17h
+pod/canal-6mhhz                3/3       Running   0          17h
+pod/canal-k7ccs                3/3       Running   2          17h
+pod/coredns-6975654877-jpqg4   1/1       Running   0          2m
+pod/coredns-6975654877-lgz9n   1/1       Running   0          2m
 </code></pre>
 
-<p>cd /root &amp;&amp; mkdir nginx &amp;&amp; cd nginx</p>
+<h1 id="测试">测试</h1>
 
-<h2 id="cat-eof-nginx-yaml">cat &lt;&lt; EOF &gt; nginx.yaml</h2>
+<ul>
+<li>创建一个nginx 应用，测试应用和dns是否正常</li>
+</ul>
 
-<p>apiVersion: v1
+<pre><code>cd /root &amp;&amp; mkdir nginx &amp;&amp; cd nginx
+
+cat &lt;&lt; EOF &gt; nginx.yaml
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: nginx
@@ -1569,11 +1618,10 @@ spec:
     nodePort: 31000
     name: nginx-port
     targetPort: 80
-    protocol: TCP</p>
+    protocol: TCP
 
-<hr />
-
-<p>apiVersion: apps/v1
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
@@ -1593,91 +1641,93 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
-EOF</p>
-
-<pre><code>
-* 创建一个pod用来测试dns
-
+EOF     
 </code></pre>
 
-<p>kubectl run curl &ndash;image=radial/busyboxplus:curl -i &ndash;tty
+<ul>
+<li>创建一个pod用来测试dns</li>
+</ul>
+
+<pre><code>kubectl run curl --image=radial/busyboxplus:curl -i --tty
 nslookup kubernetes
 nslookup nginx
 curl nginx
-exit</p>
+exit
 
-<p>[ root@curl-87b54756-qf7l9:/ ]$ nslookup kubernetes
+[ root@curl-87b54756-qf7l9:/ ]$ nslookup kubernetes
 Server:    10.96.0.10
-Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local</p>
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
 
-<p>Name:      kubernetes
+Name:      kubernetes
 Address 1: 10.96.0.1 kubernetes.default.svc.cluster.local
 [ root@curl-87b54756-qf7l9:/ ]$ nslookup nginx
 Server:    10.96.0.10
-Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local</p>
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
 
-<p>Name:      nginx
+Name:      nginx
 Address 1: 10.105.93.85 nginx.default.svc.cluster.local
 [ root@curl-87b54756-qf7l9:/ ]$ curl nginx
 &lt;!DOCTYPE html&gt;
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;style&gt;
     body {
         width: 35em;
         margin: 0 auto;
         font-family: Tahoma, Verdana, Arial, sans-serif;
     }
-</style>
-</head></p>
+&lt;/style&gt;
+&lt;/head&gt;
 
-<p>[ root@curl-87b54756-qf7l9:/ ]$ exit
-Session ended, resume using &lsquo;kubectl attach curl-87b54756-qf7l9 -c curl -i -t&rsquo; command when the pod is running</p>
 
-<pre><code>
-* 到etcd节点上执行curl nodeIp:31000 测试集群外部是否能访问nginx
-
+[ root@curl-87b54756-qf7l9:/ ]$ exit
+Session ended, resume using 'kubectl attach curl-87b54756-qf7l9 -c curl -i -t' command when the pod is running
 </code></pre>
 
-<p>curl 192.168.1.2:31000</p>
+<ul>
+<li>到etcd节点上执行curl nodeIp:31000 测试集群外部是否能访问nginx</li>
+</ul>
 
-<p>[root@node5 ~]# curl 192.168.1.2:31000
+<pre><code>curl 192.168.1.2:31000
+
+[root@node5 ~]# curl 192.168.1.2:31000
 &lt;!DOCTYPE html&gt;
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;style&gt;
     body {
         width: 35em;
         margin: 0 auto;
         font-family: Tahoma, Verdana, Arial, sans-serif;
     }
-</style>
-</head>
-<body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p></p>
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+&lt;p&gt;If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.&lt;/p&gt;
 
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
+&lt;p&gt;For online documentation and support please refer to
+&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;
 Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
+&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;
 
-<p><p><em>Thank you for using nginx.</em></p>
-</body>
-</html></p>
-
-<pre><code>
-* 安装ipvsadm查看ipvs规则
+&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 
-<p>yum install -y ipvsadm</p>
+<ul>
+<li>安装ipvsadm查看ipvs规则</li>
+</ul>
 
-<p>ipvsadm</p>
+<pre><code>yum install -y ipvsadm
 
-<p>[root@master ~]# ipvsadm
+ipvsadm
+
+[root@master ~]# ipvsadm
 IP Virtual Server version 1.2.1 (size=4096)
 Prot LocalAddress:Port Scheduler Flags
   -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
@@ -1704,7 +1754,7 @@ TCP  localhost:31000 rr
 UDP  master:domain rr
   -&gt; 10.0.0.3:domain              Masq    1      0          0
   -&gt; 10.0.1.3:domain              Masq    1      0          0
-```</p>
+</code></pre>
 
 
         
